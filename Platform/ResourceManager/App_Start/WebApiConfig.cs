@@ -1,13 +1,12 @@
 ﻿
 namespace ResourceManager
 {
-    using Models;
     using Microsoft.Restier.Providers.EntityFramework;
     using Microsoft.Restier.Publishers.OData;
-    using System.Linq;
+    using Microsoft.Restier.Publishers.OData.Batch;
+    using Models;
     using System.Web.Http;
     using System.Web.OData.Extensions;
-    using Microsoft.Restier.Publishers.OData.Batch;
 
     public static class WebApiConfig
     {
