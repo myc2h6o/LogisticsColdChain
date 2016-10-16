@@ -1,24 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
-
+﻿
 namespace ResourceManager
 {
+    using Models;
+    using Microsoft.Restier.Providers.EntityFramework;
+    using Microsoft.Restier.Publishers.OData;
+    using System.Linq;
+    using System.Web.Http;
+    using System.Web.OData.Extensions;
+    using Microsoft.Restier.Publishers.OData.Batch;
+
     public static class WebApiConfig
     {
-        public static void Register(HttpConfiguration config)
+        public async static void Register(HttpConfiguration config)
         {
-            // Web API 配置和服务
-
-            // Web API 路由
-            config.MapHttpAttributeRoutes();
-
-            config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
+            // enable query options for all properties
+            config.Filter();
+            await config.MapRestierRoute<EntityFrameworkApi<Logistics>>(
+                "Logistics",
+                "logistics",
+                new RestierBatchHandler(GlobalConfiguration.DefaultServer));
         }
     }
 }
