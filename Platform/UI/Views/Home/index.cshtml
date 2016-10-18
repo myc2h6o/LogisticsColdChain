@@ -2,10 +2,18 @@
 <title>
     @ViewBag.title
 </title>
+<head>
+    <link href="~/Content/HomeIndex.css" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/filterLayout.js"></script>
+    <script src="~/Scripts/filterResult.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+</head>
 <h2>
     @ViewBag.title
 </h2>
-<body>
-
+<body onload="initEndpoint('@ViewBag.endpoint'); initSelectorAndFilterLayout();">
+    <select id="selector" class="selector" onchange="updateFilterLayout(this.value)"></select>
+    <div id="filter" class="filter"></div>
+    <p><span id="result" class="result"></span></p>
 </body>
 </html>

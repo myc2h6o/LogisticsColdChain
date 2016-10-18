@@ -91,6 +91,8 @@
   <ItemGroup>
     <Content Include="Content\HomeIndex.css" />
     <Content Include="Global.asax" />
+    <Content Include="Scripts\filterLayout.js" />
+    <Content Include="Scripts\filterResult.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <None Include="Views\Home\index.cshtml" />

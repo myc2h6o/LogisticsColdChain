@@ -1,6 +1,7 @@
 ﻿
 namespace ResourceManager
 {
+    using Cors;
     using Microsoft.Restier.Providers.EntityFramework;
     using Microsoft.Restier.Publishers.OData;
     using Microsoft.Restier.Publishers.OData.Batch;
@@ -18,6 +19,7 @@ namespace ResourceManager
                 "Logistics",
                 "logistics",
                 new RestierBatchHandler(GlobalConfiguration.DefaultServer));
+            config.EnableCors(new DefaultCorsProvider());
         }
     }
 }
