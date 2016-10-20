@@ -22,6 +22,9 @@ function filterResult() {
             async: false,
             success: function (data) {
                 result = getTable(tableName, data.value);
+            },
+            error: function () {
+                result = 'Sorry, we cannot get data for you now.'
             }
         });
         return result;
