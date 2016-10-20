@@ -1,14 +1,12 @@
 ﻿table {
     border-collapse: collapse;
-    font-size: 20px;
+    width: 100%;
+    text-align: center;
+    font-family: 'Arial';
 }
 
-th {
+td,th{
     border: 1px solid;
-    padding: 20px;
+    padding: 8px;
 }
 
-td {
-    border: 1px solid;
-    padding: 20px;
-}
