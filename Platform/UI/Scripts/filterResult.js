@@ -14,16 +14,47 @@ function filterResult() {
 
     function getInnerHtml() {
         var tableName = document.getElementById('selector').value
+        var url = getUrl(tableName);
         var result = '';
         $.ajax({
             method: 'GET',
-            url: Filter.endpoint + tableName,
+            url: url,
             async: false,
             success: function (data) {
                 result = getTable(tableName, data.value);
             }
         });
         return result;
+    }
+
+    function getUrl(tableName) {
+        return Filter.endpoint + tableName + '?' + getFilter(tableName);
+    }
+
+    function getFilter(tableName) {
+        var filter = '$filter=';
+        $.each(Property[tableName], function (_, property) {
+            var value = document.getElementById(tableName + property).value;
+            filter = appendFilter(filter, property, value);
+        });
+        if (filter.endsWith('=')) {
+            return '';
+        } else {
+            return filter;
+        }
+    }
+
+    function appendFilter(filter, property, value) {
+        if (!value || value == '') {
+            return filter;
+        }
+
+        if (!filter.endsWith('=')) {
+            filter += ' and ';
+        }
+
+        filter += 'indexof(' + property + ',\'' + value + '\') ge 0';
+        return filter;
     }
 
     function getTable(tableName, entities) {

@@ -38,6 +38,6 @@ function updateFilterAndResult(tableName) {
     }
 
     function getInputHtml(id, displayText) {
-        return '<p>' + displayText + ':<input id="' + id + '" type="text" onkeyup="filterResult()"></input><p/>';
+        return '<p>' + displayText + ':<input id="' + id + '" type="text" onchange="filterResult()"></input><p/>';
     }
 }
