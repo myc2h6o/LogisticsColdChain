@@ -1,4 +1,6 @@
-﻿var Filter = {
+﻿"use strict";
+
+var Filter = {
     endpoint: ''
 }
 function initEndpoint(endpoint) {

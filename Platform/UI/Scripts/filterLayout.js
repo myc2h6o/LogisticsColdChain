@@ -1,64 +1,37 @@
-﻿function initSelectorAndFilterLayout() {
+﻿"use strict";
+
+function initSelectorAndFilterLayout() {
     var selector = document.getElementById('selector');
     selector.innerHTML = getInnerHtml();
-    updateFilterLayout('Cold_Storage');
+    updateFilterLayout(Property.tableNames[0]);
 
     function getInnerHtml(){
         var result = '';
-        result += getOptionItem('Cold_Storage');
-        result += getOptionItem('Cold_Storage_Inventory');
-        result += getOptionItem('Customer');
-        result += getOptionItem('Distribution');
-        result += getOptionItem('Refrigerator_Car');
-        result += getOptionItem('Supplier');
-        result += getOptionItem('Vehicle_Status');
+        $.each(Property.tableNames, function (i, tableName) {
+            result += getOptionItem(tableName, Property.tableDisplayNames[i]);
+        });
         return result;
     }
 
-    function getOptionItem(value) {
-        return '<option value="' + value + '">' + value + '</option>';
+    function getOptionItem(value, displayValue) {
+        return '<option value="' + value + '">' + displayValue + '</option>';
     }
 }
 
-function updateFilterLayout(selector) {
+function updateFilterLayout(tableName) {
     var filter = document.getElementById('filter');
-    filter.innerHTML = getInnerHtml(selector);
+    filter.innerHTML = getInnerHtml(tableName);
 
-    function getInnerHtml(selector) {
-        var values;
-        switch (selector) {
-            case 'Cold_Storage':
-                values = new Array('Number', 'Address', 'Scale', 'Company');
-                break;
-            case 'Cold_Storage_Inventory':
-                values = new Array();
-                break;
-            case 'Customer':
-                values = new Array();
-                break;
-            case 'Distribution':
-                values = new Array();
-                break;
-            case 'Refigerator_Car':
-                values = new Array();
-                break;
-            case 'Supplier':
-                values = new Array();
-                break;
-            case 'Vehicle_Status':
-                values = new Array();
-                break;
-            default:
-                values = new Array();
-                break;
+    function getInnerHtml(tableName) {
+        var properties = Property[tableName];
+        var propertiesDisplay = Property[tableName + Property.DISPLAY];
+        if (!properties || !propertiesDisplay) {
+            return '';
         }
-        return getFilterHtml(selector, values)
-    }
 
-    function getFilterHtml(propertyName, propertyValues) {
         var result = '';
-        $.each(propertyValues, function (_, value) {
-            result += getInputHtml(propertyName + value, value);
+        $.each(properties, function (i, property) {
+            result += getInputHtml(tableName + property, propertiesDisplay[i]);
         });
         return result;
     }

@@ -96,6 +96,7 @@
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <None Include="Views\Home\index.cshtml" />
+    <Content Include="Scripts\properties.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
