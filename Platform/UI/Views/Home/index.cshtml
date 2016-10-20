@@ -13,7 +13,7 @@
     @ViewBag.title
 </h2>
 <body onload="initEndpoint('@ViewBag.endpoint'); initSelectorAndFilterLayout();">
-    <select id="selector" class="selector" onchange="updateFilterLayout(this.value)"></select>
+    <select id="selector" class="selector" onchange="updateFilterAndResult(this.value)"></select>
     <div id="filter" class="filter"></div>
     <p><span id="result" class="result"></span></p>
 </body>

@@ -18,13 +18,11 @@ namespace ResourceManager.Models
 
         [StringLength(255)]
         public string Setting_Temperature { get; set; }
-
-        [Column("Real-time_Temperature")]
+        
         [StringLength(255)]
-        public string Real_time_Temperature { get; set; }
-
-        [Column("Real-time_Position")]
+        public string Realtime_Temperature { get; set; }
+        
         [StringLength(255)]
-        public string Real_time_Position { get; set; }
+        public string Realtime_Position { get; set; }
     }
 }

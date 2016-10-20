@@ -3,7 +3,7 @@
 function initSelectorAndFilterLayout() {
     var selector = document.getElementById('selector');
     selector.innerHTML = getInnerHtml();
-    updateFilterLayout(Property.tableNames[0]);
+    updateFilterAndResult(Property.tableNames[0]);
 
     function getInnerHtml(){
         var result = '';
@@ -18,9 +18,10 @@ function initSelectorAndFilterLayout() {
     }
 }
 
-function updateFilterLayout(tableName) {
+function updateFilterAndResult(tableName) {
     var filter = document.getElementById('filter');
     filter.innerHTML = getInnerHtml(tableName);
+    filterResult();
 
     function getInnerHtml(tableName) {
         var properties = Property[tableName];
