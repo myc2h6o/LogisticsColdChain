@@ -15,6 +15,7 @@
 <body onload="initEndpoint('@ViewBag.endpoint'); initSelectorAndFilterLayout();">
     <select id="selector" class="selector" onchange="updateFilterAndResult(this.value)"></select>
     <div id="filter" class="filter"></div>
+    <button onclick="filterResult()">Search</button>
     <p><span id="result" class="result"></span></p>
 </body>
 </html>
