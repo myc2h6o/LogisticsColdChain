@@ -9,7 +9,7 @@ var Property = {
     Cold_StorageDisplay: new Array('Number', 'Address', 'Scale', 'Company'),
     Cold_Storage_Inventory: new Array('Cold_Storage_Number', 'Inventory_Rate', 'Commodity', 'Quantity'),
     Cold_Storage_InventoryDisplay: new Array('Cold Storage Number', 'Inventory Rate', 'Commodity', 'Quantity'),
-    Customer: new Array('Customer_Number', 'Customer', 'Customer_Address', 'Phone_Number'),
+    Customer: new Array('Customer_Number', 'Customer1', 'Customer_Address', 'Phone_Number'),
     CustomerDisplay: new Array('Number', 'Customer', 'Address', 'Phone'),
     Distribution: new Array('Distribution_Number', 'Supplier_Number', 'Customer_Number', 'Supplier_Cold_Storage_Number', 'Customer_Cold_Storage_Number', 'Commodity', 'Quantity', 'Distribution_Status', 'Distribution_Vehicle', 'Deadline', 'Departure_Time', 'Arrival_Time'),
     DistributionDisplay: new Array('Number', 'Supplier Number', 'Customer Number', 'Supplier Cold Storage Number', 'Customer Cold Storage Number', 'Commodity', 'Quantity', 'Distribution Status', 'Distribution Vehicle', 'Deadline', 'Departure Time', 'Arrival Time'),
