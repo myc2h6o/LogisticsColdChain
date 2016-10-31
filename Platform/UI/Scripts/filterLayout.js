@@ -26,18 +26,26 @@ function updateFilterAndResult(tableName) {
     function getInnerHtml(tableName) {
         var properties = Property[tableName];
         var propertiesDisplay = Property[tableName + Property.DISPLAY];
+        var propertiesType = Property[tableName + Property.TYPE];
         if (!properties || !propertiesDisplay) {
             return '';
         }
 
         var result = '';
         $.each(properties, function (i, property) {
-            result += getInputHtml(tableName + property, propertiesDisplay[i]);
+            result += getInputHtml(tableName + property, propertiesDisplay[i], propertiesType[i]);
         });
         return result;
     }
 
-    function getInputHtml(id, displayText) {
-        return '<p>' + displayText + ':<input id="' + id + '" type="text" onchange="filterResult()"></input><p/>';
+    function getInputHtml(id, displayText, propertyType) {
+        switch (propertyType) {
+            case PropertyType.STRING:
+                return '<p>' + displayText + ':&nbsp;<input id="' + id + '" type="text" onchange="filterResult()"></p>';
+            case PropertyType.NUMBER:
+                return '<p>' + displayText + ':&nbsp;<input id="' + id + Property.NumberMin + '" type="text" onchange="filterResult()">' + '&nbsp;&nbsp;-&nbsp;&nbsp;<input id="' + id + Property.NumberMax + '" type="text" onchange="filterResult()">' + '</p>';
+            default:
+                return '';
+        }
     }
 }
