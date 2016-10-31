@@ -5,8 +5,11 @@
     font-family: 'Arial';
 }
 
-td,th{
+td,th {
     border: 1px solid;
     padding: 8px;
 }
 
+p {
+     font-family: 'Arial';
+}
