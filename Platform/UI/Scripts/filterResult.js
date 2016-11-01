@@ -36,9 +36,9 @@ function filterResult() {
 
     function getFilter(tableName) {
         var filter = '$filter=';
-        $.each(Property[tableName], function (_, property) {
-            var value = document.getElementById(tableName + property).value;
-            filter = appendFilter(filter, property, value);
+        $.each(Property[tableName], function (i, property) {
+            var type = Property[tableName + Property.TYPE][i];
+            filter = appendFilter(filter, tableName, property, type);
         });
         if (filter.endsWith('=')) {
             return '';
@@ -47,7 +47,19 @@ function filterResult() {
         }
     }
 
-    function appendFilter(filter, property, value) {
+    function appendFilter(filter, tableName, property, type) {
+        switch (type) {
+            case PropertyType.STRING:
+                return appendStringFilter(filter, tableName, property);
+            case PropertyType.NUMBER:
+                return appendMinMaxNumberFilter(filter, tableName, property);
+            default:
+                return filter;
+        }
+    }
+
+    function appendStringFilter(filter, tableName, property) {
+        var value = document.getElementById(tableName + property).value;
         if (!value || value == '') {
             return filter;
         }
@@ -57,6 +69,27 @@ function filterResult() {
         }
 
         filter += 'indexof(' + property + ',\'' + value + '\') ge 0';
+        return filter;
+    }
+
+    function appendMinMaxNumberFilter(filter, tableName, property) {
+        var minValue = document.getElementById(tableName + property + Property.NumberMin).value;
+        var maxValue = document.getElementById(tableName + property + Property.NumberMax).value;
+        filter = appendNumberFilter(filter, property, minValue, 'ge');
+        filter = appendNumberFilter(filter, property, maxValue, 'le');
+        return filter;
+    }
+
+    function appendNumberFilter(filter, property, value, operator) {
+        if (!value || value == '') {
+            return filter;
+        }
+
+        if (!filter.endsWith('=')) {
+            filter += ' and ';
+        }
+
+        filter += property + ' ' + operator + ' ' + value;
         return filter;
     }
 
