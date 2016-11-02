@@ -60,7 +60,7 @@ function filterResult() {
 
     function appendStringFilter(filter, tableName, property) {
         var value = document.getElementById(tableName + property).value;
-        if (!value || value == '') {
+        if (!value || value === '') {
             return filter;
         }
 
@@ -81,7 +81,7 @@ function filterResult() {
     }
 
     function appendNumberFilter(filter, property, value, operator) {
-        if (!value || value == '') {
+        if (!value || value === '') {
             return filter;
         }
 
