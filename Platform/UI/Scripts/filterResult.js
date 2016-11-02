@@ -127,6 +127,9 @@ function filterResult() {
     }
 
     function getTd(name) {
+        if (name === null) {
+            name = '';
+        }
         return '<td>' + name + '</td>';
     }
 }
