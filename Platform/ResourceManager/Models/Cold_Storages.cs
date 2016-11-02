@@ -6,19 +6,20 @@ namespace ResourceManager.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Cold_Storage
+    public partial class Cold_Storages
     {
         [Key]
         [StringLength(255)]
-        public string Cold_Storage_Number { get; set; }
+        public string Number { get; set; }
 
+        [Required]
         [StringLength(255)]
-        public string Cold_Storage_Address { get; set; }
+        public string Address { get; set; }
 
-        [StringLength(255)]
-        public string Cold_Storage_Scale { get; set; }
+        public int Scale { get; set; }
 
+        [Required]
         [StringLength(255)]
-        public string Cold_Storage_Company { get; set; }
+        public string Company { get; set; }
     }
 }

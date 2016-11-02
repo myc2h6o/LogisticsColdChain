@@ -1,6 +1,9 @@
 namespace ResourceManager.Models
 {
+    using System;
     using System.Data.Entity;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Linq;
 
     public partial class Logistics : DbContext
     {
@@ -9,12 +12,16 @@ namespace ResourceManager.Models
         {
         }
 
-        public DbSet<Cold_Storage> Cold_Storage { get; set; }
-        public DbSet<Cold_Storage_Inventory> Cold_Storage_Inventory { get; set; }
-        public DbSet<Customer> Customer { get; set; }
-        public DbSet<Distribution> Distribution { get; set; }
-        public DbSet<Refrigerator_Car> Refrigerator_Car { get; set; }
-        public DbSet<Supplier> Supplier { get; set; }
-        public DbSet<Vehicle_Status> Vehicle_Status { get; set; }
+        public virtual DbSet<Cars> Cars { get; set; }
+        public virtual DbSet<Cars_Status> Cars_Status { get; set; }
+        public virtual DbSet<Cold_Storage_Inventories> Cold_Storage_Inventories { get; set; }
+        public virtual DbSet<Cold_Storages> Cold_Storages { get; set; }
+        public virtual DbSet<Customers> Customers { get; set; }
+        public virtual DbSet<Orders> Orders { get; set; }
+        public virtual DbSet<Suppliers> Suppliers { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+        }
     }
 }

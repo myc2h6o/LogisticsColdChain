@@ -6,22 +6,21 @@ namespace ResourceManager.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Vehicle_Status
+    public partial class Cars_Status
     {
         [Key]
         [StringLength(255)]
         public string License_Plate_Number { get; set; }
 
-        [Column("Vehicle_Status")]
+        [Required]
         [StringLength(255)]
-        public string Vehicle_Status1 { get; set; }
+        public string Status { get; set; }
 
-        [StringLength(255)]
-        public string Setting_Temperature { get; set; }
-        
-        [StringLength(255)]
-        public string Realtime_Temperature { get; set; }
-        
+        public float? Setting_Temperature { get; set; }
+
+        public float? Realtime_Temperature { get; set; }
+
+        [Required]
         [StringLength(255)]
         public string Realtime_Position { get; set; }
     }

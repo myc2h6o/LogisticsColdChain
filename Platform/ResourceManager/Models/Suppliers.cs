@@ -6,20 +6,22 @@ namespace ResourceManager.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("Supplier")]
-    public partial class Supplier
+    public partial class Suppliers
     {
         [Key]
         [StringLength(255)]
-        public string Supplier_Number { get; set; }
+        public string Number { get; set; }
 
-        [Column("Supplier")]
+        [Required]
         [StringLength(255)]
-        public string Supplier1 { get; set; }
+        public string SName { get; set; }
 
+        [Required]
         [StringLength(255)]
-        public string Supplier_Address { get; set; }
+        public string Address { get; set; }
 
-        public double? Phone_Number { get; set; }
+        [Required]
+        [StringLength(255)]
+        public string Phone_Number { get; set; }
     }
 }

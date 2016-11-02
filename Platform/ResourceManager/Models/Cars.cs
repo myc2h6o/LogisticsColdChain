@@ -6,33 +6,36 @@ namespace ResourceManager.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Refrigerator_Car
+    public partial class Cars
     {
         [Key]
         [StringLength(255)]
         public string License_Plate_Number { get; set; }
 
-        [StringLength(255)]
-        public string Vehicle_Type { get; set; }
+        public float Tonnage { get; set; }
 
-        public double? Vehicle_Load { get; set; }
+        public float Load_Bearing { get; set; }
 
-        public int? Fuel_Consumption { get; set; }
+        public int Fuel_Consumption { get; set; }
 
+        [Required]
         [StringLength(255)]
         public string Driver { get; set; }
 
-        public double? Phone_Number { get; set; }
-
+        [Required]
         [StringLength(255)]
-        public string Minimum_Temperature { get; set; }
+        public string Phone_Number { get; set; }
 
-        public int? Maximum_Temperature { get; set; }
+        public float Minimum_Temperature { get; set; }
 
+        public float Maximum_Temperature { get; set; }
+
+        [Required]
         [StringLength(255)]
         public string Company { get; set; }
 
+        [Required]
         [StringLength(255)]
-        public string Car_Register { get; set; }
+        public string Register_Place { get; set; }
     }
 }

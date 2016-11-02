@@ -144,14 +144,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Cold_Storage.cs" />
-    <Compile Include="Models\Cold_Storage_Inventory.cs" />
-    <Compile Include="Models\Customer.cs" />
-    <Compile Include="Models\Distribution.cs" />
+    <Compile Include="Models\Cars.cs" />
+    <Compile Include="Models\Cars_Status.cs" />
+    <Compile Include="Models\Cold_Storages.cs" />
+    <Compile Include="Models\Cold_Storage_Inventories.cs" />
+    <Compile Include="Models\Customers.cs" />
     <Compile Include="Models\Logistics.cs" />
-    <Compile Include="Models\Refrigerator_Car.cs" />
-    <Compile Include="Models\Supplier.cs" />
-    <Compile Include="Models\Vehicle_Status.cs" />
+    <Compile Include="Models\Orders.cs" />
+    <Compile Include="Models\Suppliers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
