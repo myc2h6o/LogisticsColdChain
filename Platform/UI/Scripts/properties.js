@@ -7,6 +7,7 @@ var PropertyType = {
 
 var Property = {
     //use (tableName+Property) for id
+    //use (tableName+property + Min) and (tableName+property + Max) for number id
     DISPLAY: 'Display',
     TYPE: "Type",
     NumberMin: "Min",
