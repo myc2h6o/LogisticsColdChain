@@ -4,135 +4,141 @@ exec sp_configure 'Ad Hoc Distributed Queries', 1
 reconfigure
 go
 
---[Cold_Storage]:
+--[Cars]:
 
-CREATE TABLE [dbo].[Cold_Storage] (
-   [Cold_Storage_Number] nvarchar(255) not null ,
-   [Cold_Storage_Address] nvarchar(255) null ,
-   [Cold_Storage_Scale] nvarchar(255) null ,
-   [Cold_Storage_Company] nvarchar(255) null 
-  ) ON [Primary]
+CREATE TABLE [dbo].[Cars] (
+   [License_Plate_Number] nvarchar(255) PRIMARY KEY not null ,
+   [Tonnage] real Default (0) not null ,
+   [Load_Bearing] real not null ,
+   [Fuel_Consumption] int not null ,
+   [Driver] nvarchar(255) not null ,
+   [Phone_Number] nvarchar(255) not null ,
+   [Minimum_Temperature] real Default (0) not null ,
+   [Maximum_Temperature] real not null ,
+   [Company] nvarchar(255) not null ,
+   [Register_Place] nvarchar(255) not null 
+  )
  go
 
---[Cold_Storage_Inventory]:
+--[Cars_Status]:
 
-CREATE TABLE [dbo].[Cold_Storage_Inventory] (
-   [Cold_Storage_Number] nvarchar(255) not null ,
-   [Inventory_Rate] float null ,
-   [Commodity] nvarchar(255) null ,
-   [Quantity] integer null 
-  ) ON [Primary]
+CREATE TABLE [dbo].[Cars_Status] (
+   [License_Plate_Number] nvarchar(255) PRIMARY KEY not null ,
+   [Status] nvarchar(255) not null ,
+   [Setting_Temperature] real Default (0) null ,
+   [Realtime_Temperature] real Default (0) null ,
+   [Realtime_Position] nvarchar(255) not null 
+  )
  go
 
---[Customer]:
+--[Cold_Storage_Inventories]:
 
-CREATE TABLE [dbo].[Customer] (
-   [Customer_Number] nvarchar(255) not null ,
-   [Customer] nvarchar(255) null ,
-   [Customer_Address] nvarchar(255) null ,
-   [Phone_Number] float null 
-  ) ON [Primary]
+CREATE TABLE [dbo].[Cold_Storage_Inventories] (
+   [Id] int PRIMARY KEY IDENTITY (1,1) not null,
+   [Number] nvarchar(255) not null ,
+   [Usage_Rate] real not null ,
+   [Commodity] nvarchar(255) not null ,
+   [Quantity] int not null 
+  )
  go
 
---[Distribution]:
+--[Cold_Storages]:
 
-CREATE TABLE [dbo].[Distribution] (
-   [Distribution_Number] nvarchar(255) not null ,
-   [Supplier_Number] nvarchar(255) null ,
-   [Customer_Number] nvarchar(255) null ,
-   [Supplier_Cold_Storage_Number] nvarchar(255) null ,
-   [Customer_Cold_Storage_Number] nvarchar(255) null ,
-   [Commodity] nvarchar(255) null ,
-   [Quantity] nvarchar(255) null ,
-   [Distribution_Status] nvarchar(255) null ,
-   [Distribution_Vehicle] nvarchar(255) null ,
-   [Deadline] nvarchar(255) null ,
-   [Departure_Time] nvarchar(255) null ,
-   [Arrival_Time] nvarchar(255) null 
-  ) ON [Primary]
+CREATE TABLE [dbo].[Cold_Storages] (
+   [Number] nvarchar(255) PRIMARY KEY not null ,
+   [Address] nvarchar(255) not null ,
+   [Scale] int Default (0) not null ,
+   [Company] nvarchar(255) not null 
+  )
  go
 
---[Refrigerator_Car]:
+--[Customers]:
 
-CREATE TABLE [dbo].[Refrigerator_Car] (
-   [License_Plate_Number] nvarchar(255) not null ,
-   [Vehicle_Type] nvarchar(255) null ,
-   [Vehicle_Load] float null ,
-   [Fuel_Consumption] integer null ,
-   [Driver] nvarchar(255) null ,
-   [Phone_Number] float null ,
-   [Minimum_Temperature] nvarchar(255) null ,
-   [Maximum_Temperature] integer null ,
-   [Company] nvarchar(255) null ,
-   [Car_Register] nvarchar(255) null 
-  ) ON [Primary]
+CREATE TABLE [dbo].[Customers] (
+   [Number] nvarchar(255) PRIMARY KEY not null ,
+   [CName] nvarchar(255) not null ,
+   [Address] nvarchar(255) not null ,
+   [Phone_Number] nvarchar(255) not null 
+  )
  go
 
---[Supplier]:
+--[Orders]:
 
-CREATE TABLE [dbo].[Supplier] (
+CREATE TABLE [dbo].[Orders] (
+   [Number] nvarchar(255) PRIMARY KEY not null ,
    [Supplier_Number] nvarchar(255) not null ,
-   [Supplier] nvarchar(255) null ,
-   [Supplier_Address] nvarchar(255) null ,
-   [Phone_Number] float null 
-  ) ON [Primary]
+   [Customer_Number] nvarchar(255) not null ,
+   [Supplier_Cold_Storage_Number] nvarchar(255) not null ,
+   [Customer_Cold_Storage_Number] nvarchar(255) not null ,
+   [Commodity] nvarchar(255) not null ,
+   [Quantity] int Default (0) not null ,
+   [Status] nvarchar(255) not null ,
+   [Car_Assigned] nvarchar(255) not null ,
+   [Deadline] nvarchar(255) not null ,
+   [Departure_Time] nvarchar(255) not null ,
+   [Arrival_Time] nvarchar(255) not null 
+  )
  go
 
---[Vehicle_Status]:
+--[Suppliers]:
 
-CREATE TABLE [dbo].[Vehicle_Status] (
-   [License_Plate_Number] nvarchar(255) not null ,
-   [Vehicle_Status] nvarchar(255) null ,
-   [Setting_Temperature] nvarchar(255) null ,
-   [Real-time_Temperature] nvarchar(255) null ,
-   [Real-time_Position] nvarchar(255) null 
-  ) ON [Primary]
+CREATE TABLE [dbo].[Suppliers] (
+   [Number] nvarchar(255) PRIMARY KEY not null ,
+   [SName] nvarchar(255) not null ,
+   [Address] nvarchar(255) not null ,
+   [Phone_Number] nvarchar(255) not null 
+  )
  go
 
-
---[Cold_Storage]:
-INSERT INTO [dbo].[Cold_Storage] ([Cold_Storage_Number],[Cold_Storage_Address],[Cold_Storage_Scale],[Cold_Storage_Company]) 
- SELECT [Cold_Storage_Number],[Cold_Storage_Address],[Cold_Storage_Scale],[Cold_Storage_Company] 
- FROM OPENDATASOURCE('Microsoft.ACE.OLEDB.12.0','Data Source="[FOLDER_PATH]\Logistics.mdb"')...[Cold_Storage]
+--[Cars]:
+INSERT INTO [dbo].[Cars] ([License_Plate_Number],[Tonnage],[Load_Bearing],[Fuel_Consumption],[Driver],[Phone_Number],[Minimum_Temperature],[Maximum_Temperature],[Company],[Register_Place]) 
+ SELECT [License_Plate_Number],[Tonnage],[Load_Bearing],[Fuel_Consumption],[Driver],[Phone_Number],[Minimum_Temperature],[Maximum_Temperature],[Company],[Register_Place] 
+ FROM OPENDATASOURCE('Microsoft.ACE.OLEDB.12.0','Data Source="[FOLDER_PATH]\Logistics.mdb"')...[Cars]
  go 
 
---[Cold_Storage_Inventory]:
-INSERT INTO [dbo].[Cold_Storage_Inventory] ([Cold_Storage_Number],[Inventory_Rate],[Commodity],[Quantity]) 
- SELECT [Cold_Storage_Number],[Inventory_Rate],[Commodity],[Quantity] 
- FROM OPENDATASOURCE('Microsoft.ACE.OLEDB.12.0','Data Source="[FOLDER_PATH]\Logistics.mdb"')...[Cold_Storage_Inventory]
+--[Cars_Status]:
+INSERT INTO [dbo].[Cars_Status] ([License_Plate_Number],[Status],[Setting_Temperature],[Realtime_Temperature],[Realtime_Position]) 
+ SELECT [License_Plate_Number],[Status],[Setting_Temperature],[Realtime_Temperature],[Realtime_Position] 
+ FROM OPENDATASOURCE('Microsoft.ACE.OLEDB.12.0','Data Source="[FOLDER_PATH]\Logistics.mdb"')...[Cars_Status]
  go 
 
---[Customer]:
-INSERT INTO [dbo].[Customer] ([Customer_Number],[Customer],[Customer_Address],[Phone_Number]) 
- SELECT [Customer_Number],[Customer],[Customer_Address],[Phone_Number] 
- FROM OPENDATASOURCE('Microsoft.ACE.OLEDB.12.0','Data Source="[FOLDER_PATH]\Logistics.mdb"')...[Customer]
+--[Cold_Storage_Inventories]:
+SET IDENTITY_INSERT [dbo].[Cold_Storage_Inventories] ON
  go 
 
---[Distribution]:
-INSERT INTO [dbo].[Distribution] ([Distribution_Number],[Supplier_Number],[Customer_Number],[Supplier_Cold_Storage_Number],[Customer_Cold_Storage_Number],[Commodity],[Quantity],[Distribution_Status],[Distribution_Vehicle],[Deadline],[Departure_Time],[Arrival_Time]) 
- SELECT [Distribution_Number],[Supplier_Number],[Customer_Number],[Supplier_Cold_Storage_Number],[Customer_Cold_Storage_Number],[Commodity],[Quantity],[Distribution_Status],[Distribution_Vehicle],[Deadline],[Departure_Time],[Arrival_Time] 
- FROM OPENDATASOURCE('Microsoft.ACE.OLEDB.12.0','Data Source="[FOLDER_PATH]\Logistics.mdb"')...[Distribution]
+INSERT INTO [dbo].[Cold_Storage_Inventories] ([Id],[Number],[Usage_Rate],[Commodity],[Quantity]) 
+ SELECT [Id],[Number],[Usage_Rate],[Commodity],[Quantity] 
+ FROM OPENDATASOURCE('Microsoft.ACE.OLEDB.12.0','Data Source="[FOLDER_PATH]\Logistics.mdb"')...[Cold_Storage_Inventories]
  go 
 
---[Refrigerator_Car]:
-INSERT INTO [dbo].[Refrigerator_Car] ([License_Plate_Number],[Vehicle_Type],[Vehicle_Load],[Fuel_Consumption],[Driver],[Phone_Number],[Minimum_Temperature],[Maximum_Temperature],[Company],[Car_Register]) 
- SELECT [License_Plate_Number],[Vehicle_Type],[Vehicle_Load],[Fuel_Consumption],[Driver],[Phone_Number],[Minimum_Temperature],[Maximum_Temperature],[Company],[Car_Register] 
- FROM OPENDATASOURCE('Microsoft.ACE.OLEDB.12.0','Data Source="[FOLDER_PATH]\Logistics.mdb"')...[Refrigerator_Car]
+SET IDENTITY_INSERT [dbo].[Cold_Storage_Inventories] Off
  go 
 
---[Supplier]:
-INSERT INTO [dbo].[Supplier] ([Supplier_Number],[Supplier],[Supplier_Address],[Phone_Number]) 
- SELECT [Supplier_Number],[Supplier],[Supplier_Address],[Phone_Number] 
- FROM OPENDATASOURCE('Microsoft.ACE.OLEDB.12.0','Data Source="[FOLDER_PATH]\Logistics.mdb"')...[Supplier]
+
+--[Cold_Storages]:
+INSERT INTO [dbo].[Cold_Storages] ([Number],[Address],[Scale],[Company]) 
+ SELECT [Number],[Address],[Scale],[Company] 
+ FROM OPENDATASOURCE('Microsoft.ACE.OLEDB.12.0','Data Source="[FOLDER_PATH]\Logistics.mdb"')...[Cold_Storages]
  go 
 
---[Vehicle_Status]:
-INSERT INTO [dbo].[Vehicle_Status] ([License_Plate_Number],[Vehicle_Status],[Setting_Temperature],[Real-time_Temperature],[Real-time_Position]) 
- SELECT [License_Plate_Number],[Vehicle_Status],[Setting_Temperature],[Real-time_Temperature],[Real-time_Position] 
- FROM OPENDATASOURCE('Microsoft.ACE.OLEDB.12.0','Data Source="[FOLDER_PATH]\Logistics.mdb"')...[Vehicle_Status]
+--[Customers]:
+INSERT INTO [dbo].[Customers] ([Number],[CName],[Address],[Phone_Number]) 
+ SELECT [Number],[CName],[Address],[Phone_Number] 
+ FROM OPENDATASOURCE('Microsoft.ACE.OLEDB.12.0','Data Source="[FOLDER_PATH]\Logistics.mdb"')...[Customers]
  go 
 
- 
+--[Orders]:
+INSERT INTO [dbo].[Orders] ([Number],[Supplier_Number],[Customer_Number],[Supplier_Cold_Storage_Number],[Customer_Cold_Storage_Number],[Commodity],[Quantity],[Status],[Car_Assigned],[Deadline],[Departure_Time],[Arrival_Time]) 
+ SELECT [Number],[Supplier_Number],[Customer_Number],[Supplier_Cold_Storage_Number],[Customer_Cold_Storage_Number],[Commodity],[Quantity],[Status],[Car_Assigned],[Deadline],[Departure_Time],[Arrival_Time] 
+ FROM OPENDATASOURCE('Microsoft.ACE.OLEDB.12.0','Data Source="[FOLDER_PATH]\Logistics.mdb"')...[Orders]
+ go 
+
+--[Suppliers]:
+INSERT INTO [dbo].[Suppliers] ([Number],[SName],[Address],[Phone_Number]) 
+ SELECT [Number],[SName],[Address],[Phone_Number] 
+ FROM OPENDATASOURCE('Microsoft.ACE.OLEDB.12.0','Data Source="[FOLDER_PATH]\Logistics.mdb"')...[Suppliers]
+ go 
+
 exec sp_configure 'Ad Hoc Distributed Queries', 0
 reconfigure
 exec sp_configure 'show advanced options', 0
