@@ -13,7 +13,7 @@ var Property = {
     NumberMin: "Min",
     NumberMax: "Max",
     tableNames: ['Cars', 'Cars_Status', 'Cold_Storage_Inventories', 'Cold_Storages', 'Customers', 'Orders', 'Suppliers'],
-    tableDisplayNames: ['Cold Storage', 'Cold Storage Inventory', 'Customer', 'Distribution', 'Refrigerator Car', 'Supplier', 'Vehicle Status'],
+    tableDisplayNames: ['Cars', 'Cars_Status', 'Cold_Storage_Inventories', 'Cold_Storages', 'Customers', 'Orders', 'Suppliers'],
 
     Cars: ['License_Plate_Number', 'Tonnage', 'Load_Bearing', 'Fuel_Consumption', 'Driver', 'Phone_Number', 'Minimum_Temperature', 'Maximum_Temperature', 'Company', 'Register_Place'],
     CarsDisplay: ['License Plate Number', 'Tonnage', 'Load Bearing', 'Fuel Consumption', 'Driver', 'Phone Number', 'Minimum Temperature', 'Maximum Temperature', 'Company', 'Register Place'],
