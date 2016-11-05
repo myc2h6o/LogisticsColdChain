@@ -2,16 +2,57 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
 
     public static class Map
     {
-        private static Dictionary<int, Place> Places;
-        private static Dictionary<int, double> Distances;
-        private static Dictionary<int, double> TimeCosts;
+        private static Dictionary<int, Place> places = new Dictionary<int, Place>();
+        private static double[,] distances;
+        private static double[,] timeCosts;
 
         public static void Init(string filePath)
         {
-            throw new NotImplementedException();
+            try
+            {
+                StreamReader reader = new StreamReader(filePath);
+
+                // place
+                int count = int.Parse(reader.ReadLine());
+                for (int i = 0; i < count; ++i)
+                {
+                    string line = reader.ReadLine();
+                    int pos = 0;
+                    int placeId = int.Parse(Utils.SubStringAndMovePos(line, ref pos));
+                    Place place = new Place()
+                    {
+                        Index = i,
+                        Name = Utils.SubStringAndMovePos(line, ref pos)
+                    };
+                    places.Add(placeId, place);
+                }
+
+                // distance and time cost
+                distances = new double[count, count];
+                timeCosts = new double[count, count];
+                count = count * (count - 1) / 2;
+                for (int i = 0; i < count; ++i)
+                {
+                    string line = reader.ReadLine();
+                    int pos = 0;
+                    int srcId = int.Parse(Utils.SubStringAndMovePos(line, ref pos));
+                    int dstId = int.Parse(Utils.SubStringAndMovePos(line, ref pos));
+                    double distance = double.Parse(Utils.SubStringAndMovePos(line, ref pos));
+                    double timeCost = double.Parse(Utils.SubStringAndMovePos(line, ref pos));
+                    distances[places[srcId].Index, places[dstId].Index] = distance;
+                    distances[places[dstId].Index, places[srcId].Index] = distance;
+                    timeCosts[places[srcId].Index, places[dstId].Index] = timeCost;
+                    timeCosts[places[dstId].Index, places[srcId].Index] = timeCost;
+                }
+            }
+            catch
+            {
+                throw new InvalidPlanInfoException("Map");
+            }
         }
 
         public static Place GetPlace(int placeId)
@@ -32,7 +73,7 @@
 
     public class Place
     {
-        public int Id { get; set; }
+        public int Index { get; set; }
         public string Name { get; set; }
     }
 }

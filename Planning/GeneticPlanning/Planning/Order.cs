@@ -2,14 +2,39 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
 
     public static class Orders
     {
-        private static Dictionary<int, Order> orders;
+        private static Dictionary<int, Order> orders = new Dictionary<int, Order>();
 
         public static void Init(string filePath)
         {
-            throw new NotImplementedException();
+            try
+            {
+                StreamReader reader = new StreamReader(filePath);
+                int count = int.Parse(reader.ReadLine());
+                for (int i = 0; i < count; ++i)
+                {
+                    string line = reader.ReadLine();
+                    int pos = 0;
+                    Order order = new Order()
+                    {
+                        Id = int.Parse(Utils.SubStringAndMovePos(line, ref pos)),
+                        SrcPlaceId = int.Parse(Utils.SubStringAndMovePos(line, ref pos)),
+                        DstPlaceId = int.Parse(Utils.SubStringAndMovePos(line, ref pos)),
+                        CargoWeight = double.Parse(Utils.SubStringAndMovePos(line, ref pos)),
+                        RottenFine = double.Parse(Utils.SubStringAndMovePos(line, ref pos)),
+                        MinTime = DateTime.Parse($"{Utils.SubStringAndMovePos(line, ref pos)} {Utils.SubStringAndMovePos(line, ref pos)}"),
+                        MaxTime = DateTime.Parse($"{Utils.SubStringAndMovePos(line, ref pos)} {Utils.SubStringAndMovePos(line, ref pos)}")
+                    };
+                    orders.Add(order.Id, order);
+                }
+            }
+            catch
+            {
+                throw new InvalidPlanInfoException("Order");
+            }
         }
 
         public static Order GetOrder(int orderId)
