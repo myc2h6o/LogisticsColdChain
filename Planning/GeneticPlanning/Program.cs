@@ -8,9 +8,9 @@
     {
         static void Main(string[] args)
         {
-            if (args.Length < 2)
+            if (args.Length != 4)
             {
-                Console.WriteLine("Usage [PROGRAM_NAME] [0|1] [INPUT_FOLDER_PATH]");
+                Console.WriteLine("Usage [PROGRAM_NAME] [0(long)|1(short)] [INPUT_FOLDER_PATH] [YYYY/MM/DD HH:MM:SS]");
                 return;
             }
 
@@ -18,6 +18,7 @@
             {
                 InitPlanType(args[0]);
                 InitPlanInformation(args[1]);
+                InitCurrentTime($"{args[2]} {args[3]}");
             }
             catch (InvalidModelTypeException)
             {
@@ -27,6 +28,11 @@
             catch(InvalidPlanInfoException e)
             {
                 Console.WriteLine($"Wrong while parsing plan info: {e.InfoType}.");
+                return;
+            }
+            catch (InvalidDateTimeException)
+            {
+                Console.WriteLine($"Wrong while parsing datetime.");
                 return;
             }
 
@@ -56,6 +62,17 @@
             Map.Init(folderPath + "/map.txt");
             Orders.Init(folderPath + "/order.txt");
             Cars.Init(folderPath + "/car.txt");
+        }
+
+        static void InitCurrentTime(string timeStr)
+        {
+            try {
+                Constant.CurrentTime = DateTime.Parse(timeStr);
+            }
+            catch
+            {
+                throw new InvalidDateTimeException();
+            }
         }
     }
 }

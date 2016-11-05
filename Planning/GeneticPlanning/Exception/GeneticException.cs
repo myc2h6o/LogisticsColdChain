@@ -3,6 +3,7 @@
     using System;
 
     public class InvalidModelTypeException : Exception{ }
+
     public class InvalidPlanInfoException : Exception
     {
         public string InfoType { get; set; } = "Unknown";
@@ -11,4 +12,6 @@
             this.InfoType = infoType;
         }
     }
+
+    public class InvalidDateTimeException : Exception { }
 }

@@ -1,5 +1,7 @@
 ﻿namespace GeneticPlanning.Planning
 {
+    using System;
+
     public enum ModelType { LONG, SHORT}
 
     public static class Constant
@@ -10,5 +12,6 @@
         public static int FineNextDay { get; private set; } = 50;
         public static int FineHourTon { get; private set; } = 20;       //per hour per ton
         public static ModelType PlanType { get; set; }
+        public static DateTime CurrentTime { get; set; }
     }
 }
