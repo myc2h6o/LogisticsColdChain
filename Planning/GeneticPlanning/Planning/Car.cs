@@ -1,6 +1,5 @@
 ﻿namespace GeneticPlanning.Planning
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
 
@@ -36,7 +35,16 @@
 
         public static Car GetCar(int carId)
         {
-            throw new NotImplementedException();
+            CheckCarId(carId);
+            return cars[carId];
+        }
+
+        private static void CheckCarId(int carId)
+        {
+            if (!cars.ContainsKey(carId))
+            {
+                throw new InvalidCarIdException(carId);
+            }
         }
     }
 

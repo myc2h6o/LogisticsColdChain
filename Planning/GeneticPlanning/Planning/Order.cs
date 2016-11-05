@@ -39,7 +39,16 @@
 
         public static Order GetOrder(int orderId)
         {
-            throw new NotImplementedException();
+            CheckOrderId(orderId);
+            return orders[orderId];
+        }
+
+        private static void CheckOrderId(int orderId)
+        {
+            if (!orders.ContainsKey(orderId))
+            {
+                throw new InvalidOrderIdException(orderId);
+            }
         }
     }
 

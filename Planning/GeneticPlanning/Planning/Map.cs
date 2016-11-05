@@ -1,6 +1,5 @@
 ﻿namespace GeneticPlanning.Planning
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
 
@@ -57,17 +56,30 @@
 
         public static Place GetPlace(int placeId)
         {
-            throw new NotImplementedException();
+            CheckPlaceId(placeId);
+            return places[placeId];
         }
 
         public static double GetDistance(int placeId1, int placeId2)
         {
-            throw new NotImplementedException();
+            CheckPlaceId(placeId1);
+            CheckPlaceId(placeId2);
+            return distances[places[placeId1].Index, places[placeId2].Index];
         }
 
         public static double GetTimeCost(int placeId1, int placeId2)
         {
-            throw new NotImplementedException();
+            CheckPlaceId(placeId1);
+            CheckPlaceId(placeId2);
+            return timeCosts[places[placeId1].Index, places[placeId2].Index];
+        }
+
+        private static void CheckPlaceId(int placeId)
+        {
+            if (!places.ContainsKey(placeId))
+            {
+                throw new InvalidPlaceIdException(placeId);
+            }
         }
     }
 
