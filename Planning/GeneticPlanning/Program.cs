@@ -1,6 +1,7 @@
 ﻿namespace GeneticPlanning
 {
     using System;
+    using Genetic;
     using Planning;
 
     class Program
@@ -29,6 +30,9 @@
                 return;
             }
 
+            GeneticDistribution.Solve();
+            GeneticDistribution.PrintResult();
+            Console.ReadLine();
         }
 
         static void InitPlanType(string typeStr)
