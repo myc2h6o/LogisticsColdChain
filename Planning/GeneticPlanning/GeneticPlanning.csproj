@@ -44,12 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exception\GeneticException.cs" />
-    <Compile Include="Genetic\GeneticDistribution.cs" />
+    <Compile Include="Genetic\Distribution.cs" />
+    <Compile Include="Genetic\GeneticDistributions.cs" />
     <Compile Include="Planning\Car.cs" />
-    <Compile Include="Planning\Constant.cs" />
+    <Compile Include="Constant.cs" />
     <Compile Include="Planning\Order.cs" />
     <Compile Include="Planning\Map.cs" />
-    <Compile Include="Planning\Place.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

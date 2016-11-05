@@ -6,8 +6,8 @@
     public static class Map
     {
         private static Dictionary<int, Place> Places;
-        private static Dictionary<int, int> Distances;
-        private static Dictionary<int, int> TimeCosts;
+        private static Dictionary<int, double> Distances;
+        private static Dictionary<int, double> TimeCosts;
 
         public static void Init(string filePath)
         {

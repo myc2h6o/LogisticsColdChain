@@ -29,5 +29,6 @@
         public int RegisterPlaceId { get; set; }
         public int CurrentPlaceId { get; set; }
         public int Tonnage { get; set; }
+        public double OilCost { get; set; }
     }
 }

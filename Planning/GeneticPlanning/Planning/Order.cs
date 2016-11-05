@@ -23,7 +23,6 @@
         public int Id { get; set; }
         public int SrcPlaceId { get; set; }
         public int DstPlaceId { get; set; }
-        public string CargoName { get; set; }
         public double CargoWeight { get; set; }
         public double RottenFine { get; set; } // per ton per rotten rate
         public DateTime MinTime { get; set; }

@@ -30,8 +30,8 @@
                 return;
             }
 
-            GeneticDistribution.Solve();
-            GeneticDistribution.PrintResult();
+            GeneticDistributions.Solve();
+            GeneticDistributions.PrintResult();
             Console.ReadLine();
         }
 
