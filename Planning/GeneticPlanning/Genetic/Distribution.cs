@@ -1,6 +1,8 @@
 ﻿namespace GeneticPlanning.Genetic
 {
-    class Distribution
+    public class Distribution
     {
+        public Distribution() { }
+        public void Reproduce() { }
     }
 }
