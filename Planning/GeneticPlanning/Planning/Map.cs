@@ -34,6 +34,12 @@
                 // distance and time cost
                 distances = new double[count, count];
                 timeCosts = new double[count, count];
+                for (int i = 0; i < count; ++i)
+                {
+                    distances[i, i] = 0;
+                    timeCosts[i, i] = 0;
+                }
+
                 int relationCount = count * (count - 1) / 2;
                 for (int i = 0; i < relationCount; ++i)
                 {

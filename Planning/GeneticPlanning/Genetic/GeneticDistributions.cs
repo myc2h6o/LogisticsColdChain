@@ -31,7 +31,7 @@
 
         private static void PrintResultLong()
         {
-            Console.WriteLine("[TODO] Result for short situation.");
+            Console.WriteLine("[TODO] Result for long situation.");
         }
 
         private static void PrintResultShort()
