@@ -5,7 +5,8 @@
 
     public static class Map
     {
-        private static Dictionary<int, Place> places = new Dictionary<int, Place>();
+        public static int count { get; private set; }
+        public static Dictionary<int, Place> places { get; private set; } = new Dictionary<int, Place>();
         private static double[,] distances;
         private static double[,] timeCosts;
 
@@ -16,7 +17,7 @@
                 StreamReader reader = new StreamReader(filePath);
 
                 // place
-                int count = int.Parse(reader.ReadLine());
+                count = int.Parse(reader.ReadLine());
                 for (int i = 0; i < count; ++i)
                 {
                     string line = reader.ReadLine();
@@ -33,8 +34,8 @@
                 // distance and time cost
                 distances = new double[count, count];
                 timeCosts = new double[count, count];
-                count = count * (count - 1) / 2;
-                for (int i = 0; i < count; ++i)
+                int relationCount = count * (count - 1) / 2;
+                for (int i = 0; i < relationCount; ++i)
                 {
                     string line = reader.ReadLine();
                     int pos = 0;

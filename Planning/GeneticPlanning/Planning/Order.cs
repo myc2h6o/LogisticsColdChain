@@ -6,14 +6,16 @@
 
     public static class Orders
     {
-        private static Dictionary<int, Order> orders = new Dictionary<int, Order>();
+        public static int count { get; private set; }
+        public static Dictionary<int, Order> orders { get; private set; } = new Dictionary<int, Order>();
+        private static Dictionary<int, int> indexId = new Dictionary<int, int>();
 
         public static void Init(string filePath)
         {
             try
             {
                 StreamReader reader = new StreamReader(filePath);
-                int count = int.Parse(reader.ReadLine());
+                count = int.Parse(reader.ReadLine());
                 for (int i = 0; i < count; ++i)
                 {
                     string line = reader.ReadLine();
@@ -29,6 +31,7 @@
                         MaxTime = DateTime.Parse($"{Utils.SubStringAndMovePos(line, ref pos)} {Utils.SubStringAndMovePos(line, ref pos)}")
                     };
                     orders.Add(order.Id, order);
+                    indexId.Add(i, order.Id);
                 }
             }
             catch

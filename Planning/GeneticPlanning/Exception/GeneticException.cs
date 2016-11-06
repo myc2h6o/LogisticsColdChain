@@ -38,4 +38,6 @@
     {
         public InvalidPlaceIdException(int id) : base(id) { }
     }
+
+    public class InvalidDistributionException : Exception { }
 }

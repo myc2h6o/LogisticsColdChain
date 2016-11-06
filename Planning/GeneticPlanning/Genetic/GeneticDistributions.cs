@@ -33,7 +33,7 @@
             {
                 for(int j = 0; j < GroupCount; ++j)
                 {
-                    distributions[j].Reproduce();
+                    distributions[j].Mutate();
                 }
 
                 if(i % iterPrintCount == 0)

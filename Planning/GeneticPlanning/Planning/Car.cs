@@ -5,13 +5,15 @@
 
     public static class Cars
     {
-        private static Dictionary<int, Car> cars = new Dictionary<int, Car>();
+        public static int count { get; private set; }
+        public static Dictionary<int, Car> cars { get; private set; } = new Dictionary<int, Car>();
+        private static Dictionary<int, int> indexId = new Dictionary<int, int>();
 
         public static void Init(string filePath)
         {
             try {
                 StreamReader reader = new StreamReader(filePath);
-                int count = int.Parse(reader.ReadLine());
+                count = int.Parse(reader.ReadLine());
                 for (int i = 0; i < count; ++i)
                 {
                     string line = reader.ReadLine();
@@ -25,6 +27,7 @@
                         OilCost = double.Parse(Utils.SubStringAndMovePos(line, ref pos))
                     };
                     cars.Add(car.Id, car);
+                    indexId.Add(i, car.Id);
                 }
             }
             catch
@@ -37,6 +40,11 @@
         {
             CheckCarId(carId);
             return cars[carId];
+        }
+
+        public static Car GetRandomCar()
+        {
+            return cars[indexId[Utils.Random(count)]];
         }
 
         private static void CheckCarId(int carId)
