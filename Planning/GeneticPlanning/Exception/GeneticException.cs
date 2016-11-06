@@ -40,4 +40,6 @@
     }
 
     public class InvalidDistributionException : Exception { }
+
+    public class InvalidDistributionUnits : Exception { }
 }
