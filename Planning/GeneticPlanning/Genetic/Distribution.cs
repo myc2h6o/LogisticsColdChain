@@ -25,8 +25,8 @@
             distribution[7].Add(new DistributionUnit(1, 1));
             distribution[7].Add(new DistributionUnit(2, 2));
             distribution[1].Add(new DistributionUnit(3, 2));
-            distribution[8].Add(new DistributionUnit(4, 1));
             distribution[8].Add(new DistributionUnit(5, 3));
+            distribution[8].Add(new DistributionUnit(4, 1));
             distribution[9].Add(new DistributionUnit(6, 4));
 
             /*
@@ -293,9 +293,90 @@
 
         private double GetUnitsCostShort(Car car, List<DistributionUnit> units)
         {
-            double cost = 0.0;
+            var tomorrowUnits = new List<DistributionUnit>();
+            var todayUnits = new List<DistributionUnit>();
+            foreach(var unit in units)
+            {
+                todayUnits.Add(unit.Clone() as DistributionUnit);
+            }
 
-            return cost;
+            var todayPlans = GetTodayPlanFrom(car, todayUnits);
+            while (MoveInvalidToTomorrow(todayUnits, tomorrowUnits)) {
+                todayPlans = GetTodayPlanFrom(car, todayUnits);
+            }
+
+            // [TODO] calculate cost in movevalid and change function name.
+            return 0.0;
+        }
+
+        private List<DistributionUnit> GetTodayPlanFrom(Car car, List<DistributionUnit> todayUnits)
+        {
+            var result = new List<DistributionUnit>();
+            double currentWeight = 0.0;
+            foreach(var unit in todayUnits)
+            {
+                if(currentWeight + unit.Weight > car.Tonnage)
+                {
+                    // use weight = 0.0 to indicate back to freezer
+                    result.Add(new DistributionUnit(0, 0.0));
+                    currentWeight = 0.0;
+                }
+                result.Add(unit.Clone() as DistributionUnit);
+                currentWeight += unit.Weight;
+            }
+            return result;
+        }
+
+        private bool MoveInvalidToTomorrow(List<DistributionUnit> todayUnits, List<DistributionUnit> tomorrowUnits) {
+            DateTime currentTime = Constant.CurrentTime;
+            int currentPlaceId = Cars.GetRandomCar().RegisterPlaceId;
+            for(int i= 0; i< todayUnits.Count; ++i)
+            {
+                var unit = todayUnits[i];
+                Order order = Orders.GetOrder(unit.OrderId);
+                if(unit.Weight == 0.0)
+                {
+                    currentPlaceId = Cars.GetRandomCar().RegisterPlaceId;
+                    currentTime = GetReachTime(currentTime, currentPlaceId, Orders.GetOrder(todayUnits[i - 1].OrderId));
+                    currentTime += Constant.LoadTime;
+                    continue;
+                }
+
+                DateTime reachTime = GetReachTime(currentTime, currentPlaceId, order);
+                if (reachTime == currentTime)
+                {
+                    continue;
+                }
+
+                if (reachTime > order.MaxTime + Constant.MaxExceedTime
+                    || (reachTime > order.MaxTime && Math.Ceiling((reachTime - order.MaxTime).TotalHours) * unit.Weight * Constant.FineHourTon > Constant.FineNextDay))
+                {
+                    todayUnits.Remove(unit);
+                    tomorrowUnits.Add(unit.Clone() as DistributionUnit);
+                    tomorrowUnits.Add(new DistributionUnit(0, 0.0));
+                    return true;
+                }
+
+                currentTime = ((reachTime > order.MinTime) ? reachTime : order.MinTime) + Constant.LoadTime;
+                currentPlaceId = order.DstPlaceId;
+            }
+            return false;
+        }
+
+        private DateTime GetReachTime(DateTime time, int currrentPlaceId, Order order)
+        {
+            if(currrentPlaceId == order.DstPlaceId)
+            {
+                return time;
+            }
+
+            double timeMinute = 0;
+            if(currrentPlaceId != order.SrcPlaceId)
+            {
+                timeMinute = Map.GetTimeCost(currrentPlaceId, order.SrcPlaceId);
+            }
+            timeMinute += Map.GetTimeCost(order.SrcPlaceId, order.DstPlaceId);
+            return time + new TimeSpan(0, (int)timeMinute, 0);
         }
 
         public object Clone()
