@@ -36,7 +36,7 @@
                 return;
             }
 
-            GeneticDistributions.Solve(1, 500);
+            GeneticDistributions.Solve(2, 500);
             GeneticDistributions.PrintResult();
             Console.ReadLine();
         }
