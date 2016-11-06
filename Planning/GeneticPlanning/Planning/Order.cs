@@ -25,6 +25,7 @@
                         Id = int.Parse(Utils.SubStringAndMovePos(line, ref pos)),
                         SrcPlaceId = int.Parse(Utils.SubStringAndMovePos(line, ref pos)),
                         DstPlaceId = int.Parse(Utils.SubStringAndMovePos(line, ref pos)),
+                        CargoName = Utils.SubStringAndMovePos(line, ref pos),
                         CargoWeight = double.Parse(Utils.SubStringAndMovePos(line, ref pos)),
                         RottenFine = double.Parse(Utils.SubStringAndMovePos(line, ref pos)),
                         MinTime = DateTime.Parse($"{Utils.SubStringAndMovePos(line, ref pos)} {Utils.SubStringAndMovePos(line, ref pos)}"),
@@ -60,6 +61,7 @@
         public int Id { get; set; }
         public int SrcPlaceId { get; set; }
         public int DstPlaceId { get; set; }
+        public string CargoName { get; set; }
         public double CargoWeight { get; set; }
         public double RottenFine { get; set; } // per ton per rotten rate
         public DateTime MinTime { get; set; }

@@ -58,10 +58,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="testInfoLong\car.txt" />
-    <Content Include="testInfoLong\map.txt" />
-    <Content Include="testInfoLong\order.txt" />
+    <Content Include="testInfo\long\car.txt" />
+    <Content Include="testInfo\long\map.txt" />
+    <Content Include="testInfo\long\order.txt" />
+    <Content Include="testInfo\README.txt" />
+    <Content Include="testInfo\shortCrazy\car.txt" />
+    <Content Include="testInfo\shortCrazy\map.txt" />
+    <Content Include="testInfo\shortCrazy\order.txt" />
+    <Content Include="testInfo\shortNormal\car.txt" />
+    <Content Include="testInfo\shortNormal\map.txt" />
+    <Content Include="testInfo\shortNormal\order.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
