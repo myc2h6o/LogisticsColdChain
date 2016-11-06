@@ -8,7 +8,7 @@
     public class Distribution : ICloneable
     {
         public double Cost { get; private set; }
-        Dictionary<int, List<DistributionUnit>> distribution = new Dictionary<int, List<DistributionUnit>>();
+        public Dictionary<int, List<DistributionUnit>> distribution { get; private set; } = new Dictionary<int, List<DistributionUnit>>();
 
         public Distribution(bool empty = false)
         {

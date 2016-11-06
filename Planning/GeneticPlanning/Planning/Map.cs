@@ -1,5 +1,6 @@
 ﻿namespace GeneticPlanning.Planning
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
 
@@ -65,6 +66,11 @@
         {
             CheckPlaceId(placeId);
             return places[placeId];
+        }
+
+        public static string GetPlaceName(int placeId)
+        {
+            return GetPlace(placeId).Name;
         }
 
         public static double GetDistance(int placeId1, int placeId2)

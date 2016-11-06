@@ -1,6 +1,7 @@
 ﻿namespace GeneticPlanning.Genetic
 {
     using System;
+    using Planning;
 
     public static class GeneticDistributions
     {
@@ -31,7 +32,34 @@
 
         private static void PrintResultLong()
         {
-            Console.WriteLine("[TODO] Result for long situation.");
+            Distribution bestDistribution = GetBestDistribution();
+            var bestUnits = bestDistribution.distribution;
+            int i = 0;
+            foreach (var unitPair in bestUnits)
+            {
+                i++;
+                int currentPlaceId = unitPair.Key;
+                Console.Write($"Car_{i}: ");
+                bool isFirst = true;
+                foreach (var unit in unitPair.Value)
+                {
+                    Order order = Orders.GetOrder(unit.OrderId);
+                    if (!isFirst)
+                    {
+                        Console.Write("->");
+                    }
+                    isFirst = false;
+
+                    if(order.SrcPlaceId != currentPlaceId)
+                    {
+                        Console.Write($"{Map.GetPlaceName(order.SrcPlaceId)}->");
+                    }
+                    Console.Write($"{Map.GetPlaceName(order.DstPlaceId)}");
+                    currentPlaceId = order.DstPlaceId;
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine($"total cost: {bestDistribution.Cost.ToString("F2")}");
         }
 
         private static void PrintResultShort()
@@ -77,6 +105,19 @@
             {
                 Console.WriteLine($"{percent}%");
             }
+        }
+
+        private static Distribution GetBestDistribution()
+        {
+            int minIndex = 0;
+            for(int i = 1; i < GroupCount; ++i)
+            {
+                if(distributions[i].Cost < distributions[minIndex].Cost)
+                {
+                    minIndex = i;
+                }
+            }
+            return distributions[minIndex];
         }
     }
 }
