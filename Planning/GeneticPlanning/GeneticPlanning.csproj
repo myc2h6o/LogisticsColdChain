@@ -58,9 +58,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="testInfo\car.txt" />
-    <Content Include="testInfo\map.txt" />
-    <Content Include="testInfo\order.txt" />
+    <Content Include="testInfoLong\car.txt" />
+    <Content Include="testInfoLong\map.txt" />
+    <Content Include="testInfoLong\order.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

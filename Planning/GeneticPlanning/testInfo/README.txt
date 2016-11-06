@@ -10,4 +10,4 @@ map:
 count
 [PlaceId] [PlaceName]
 ......
-[PlaceId] [PlaceId] [Distance] [TimeCost]
+[PlaceId] [PlaceId] [Distance] [TimeCost(min for short and hour for long)]
