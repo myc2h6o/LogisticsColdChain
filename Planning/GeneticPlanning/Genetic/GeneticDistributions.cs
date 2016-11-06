@@ -55,7 +55,12 @@
             {
                 for(int j = 0; j < GroupCount; ++j)
                 {
-                    distributions[j].Mutate();
+                    Distribution sonDistribution = distributions[j].Clone() as Distribution;
+                    sonDistribution.Mutate();
+                    if(sonDistribution.Cost <= distributions[j].Cost)
+                    {
+                        distributions[j] = sonDistribution;
+                    }
                 }
 
                 if(i % iterPrintCount == 0)
