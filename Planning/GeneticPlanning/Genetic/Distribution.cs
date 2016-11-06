@@ -17,6 +17,19 @@
                 return;
             }
 
+            // test case
+            distribution.Add(7, new List<DistributionUnit>());
+            distribution.Add(1, new List<DistributionUnit>());
+            distribution.Add(8, new List<DistributionUnit>());
+            distribution.Add(9, new List<DistributionUnit>());
+            distribution[7].Add(new DistributionUnit(1, 1));
+            distribution[7].Add(new DistributionUnit(2, 2));
+            distribution[1].Add(new DistributionUnit(3, 2));
+            distribution[8].Add(new DistributionUnit(4, 1));
+            distribution[8].Add(new DistributionUnit(5, 3));
+            distribution[9].Add(new DistributionUnit(6, 4));
+
+            /*
             var orders = Orders.orders;
             foreach (var order in orders)
             {
@@ -34,6 +47,7 @@
                     orderWeight -= givenWeight;
                 }
             }
+            */
 
             UpdateCost();
             // [TODO] remove validate in production
@@ -279,7 +293,9 @@
 
         private double GetUnitsCostShort(Car car, List<DistributionUnit> units)
         {
-            return 0.0;
+            double cost = 0.0;
+
+            return cost;
         }
 
         public object Clone()
