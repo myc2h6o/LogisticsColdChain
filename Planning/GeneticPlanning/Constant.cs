@@ -1,4 +1,4 @@
-﻿namespace GeneticPlanning.Planning
+﻿namespace GeneticPlanning
 {
     using System;
 

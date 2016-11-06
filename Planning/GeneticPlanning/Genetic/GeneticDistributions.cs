@@ -15,7 +15,29 @@
             Reproduce();
         }
 
-        public static void PrintResult() { }
+        public static void PrintResult() {
+            switch (Constant.PlanType)
+            {
+                case ModelType.LONG:
+                    PrintResultLong();
+                    break;
+                case ModelType.SHORT:
+                    PrintResultShort();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private static void PrintResultLong()
+        {
+            Console.WriteLine("[TODO] Result for short situation.");
+        }
+
+        private static void PrintResultShort()
+        {
+            Console.WriteLine("[TODO] Result for short situation.");
+        }
 
         private static void InitSolutionSet()
         {
