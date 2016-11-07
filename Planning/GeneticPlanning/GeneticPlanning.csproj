@@ -45,7 +45,9 @@
   <ItemGroup>
     <Compile Include="Exception\GeneticException.cs" />
     <Compile Include="Genetic\Distribution.cs" />
+    <Compile Include="Genetic\ShortDistribution.cs" />
     <Compile Include="Genetic\GeneticDistributions.cs" />
+    <Compile Include="Genetic\LongDistribution.cs" />
     <Compile Include="Planning\Car.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="Planning\Order.cs" />

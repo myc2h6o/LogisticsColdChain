@@ -64,7 +64,34 @@
 
         private static void PrintResultShort()
         {
-            Console.WriteLine("[TODO] Result for short situation.");
+            Distribution bestDistribution = GetBestDistribution();
+            var bestUnits = bestDistribution.distribution;
+            int i = 0;
+            foreach (var unitPair in bestUnits)
+            {
+                i++;
+                int currentPlaceId = unitPair.Key;
+                Console.Write($"Car_{i}: ");
+                bool isFirst = true;
+                foreach (var unit in unitPair.Value)
+                {
+                    Order order = Orders.GetOrder(unit.OrderId);
+                    if (!isFirst)
+                    {
+                        Console.Write("->");
+                    }
+                    isFirst = false;
+
+                    if (order.SrcPlaceId != currentPlaceId)
+                    {
+                        Console.Write($"{Map.GetPlaceName(order.SrcPlaceId)}->");
+                    }
+                    Console.Write($"{Map.GetPlaceName(order.DstPlaceId)}");
+                    currentPlaceId = order.DstPlaceId;
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine($"total cost: {bestDistribution.Cost.ToString("F2")}");
         }
 
         private static void InitSolutionSet()
@@ -72,7 +99,17 @@
             distributions = new Distribution[GroupCount];
             for (int i = 0; i < GroupCount; ++i)
             {
-                distributions[i] = new Distribution();
+                switch (Constant.PlanType)
+                {
+                    case ModelType.LONG:
+                        distributions[i] = new LongDistribution();
+                        break;
+                    case ModelType.SHORT:
+                        distributions[i] = new ShortDistribution();
+                        break;
+                    default:
+                        throw new InvalidModelTypeException();
+                }
             }
         }
 
@@ -83,7 +120,7 @@
             {
                 for(int j = 0; j < GroupCount; ++j)
                 {
-                    Distribution sonDistribution = distributions[j].Clone() as Distribution;
+                    Distribution sonDistribution = distributions[j].Copy();
                     sonDistribution.Mutate();
                     if(sonDistribution.Cost <= distributions[j].Cost)
                     {

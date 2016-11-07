@@ -5,10 +5,10 @@
     using System.Linq;
     using Planning;
 
-    public class Distribution : ICloneable
+    public class Distribution
     {
         public double Cost { get; private set; }
-        public Dictionary<int, List<DistributionUnit>> distribution { get; private set; } = new Dictionary<int, List<DistributionUnit>>();
+        public Dictionary<int, List<DistributionUnit>> distribution { get; protected set; } = new Dictionary<int, List<DistributionUnit>>();
 
         public Distribution(bool empty = false)
         {
@@ -54,7 +54,8 @@
             ValidateDistribution();
         }
 
-        public void Mutate() {
+        public void Mutate()
+        {
             int mutateType = Utils.Random(3);
             switch (mutateType)
             {
@@ -142,7 +143,7 @@
             int listPos = Utils.Random(units.Count);
             DistributionUnit chosenUnit = units[listPos];
             distribution[carId].Remove(chosenUnit);
-            if(distribution[carId].Count == 0)
+            if (distribution[carId].Count == 0)
             {
                 distribution.Remove(carId);
             }
@@ -150,9 +151,9 @@
             if (distribution.ContainsKey(car.Id))
             {
                 int i = 0;
-                foreach(var unit in distribution[car.Id])
+                foreach (var unit in distribution[car.Id])
                 {
-                    if(unit.OrderId == chosenUnit.OrderId
+                    if (unit.OrderId == chosenUnit.OrderId
                         && unit.Weight + chosenUnit.Weight <= car.Tonnage)
                     {
                         distribution[car.Id][i].AddWeight(chosenUnit.Weight);
@@ -172,7 +173,8 @@
         private void ValidateDistribution()
         {
             //cars
-            try {
+            try
+            {
                 foreach (var carId in distribution.Keys)
                 {
                     Cars.GetCar(carId);
@@ -185,7 +187,7 @@
 
             //orders
             var orders = new Dictionary<int, Order>();
-            foreach(var unitsPair in this.distribution)
+            foreach (var unitsPair in this.distribution)
             {
                 foreach (var unit in unitsPair.Value)
                 {
@@ -198,9 +200,9 @@
                 }
             }
 
-            foreach(var order in orders)
+            foreach (var order in orders)
             {
-                if(order.Value.CargoWeight != Orders.orders[order.Key].CargoWeight)
+                if (order.Value.CargoWeight != Orders.orders[order.Key].CargoWeight)
                 {
                     throw new InvalidDistributionException();
                 }
@@ -240,186 +242,9 @@
             return cost;
         }
 
-        private double GetUnitsCost(Car car, List<DistributionUnit> units)
-        {
-            switch (Constant.PlanType)
-            {
-                case ModelType.LONG:
-                    return GetUnitsCostLong(car, units);
-                case ModelType.SHORT:
-                    return GetUnitsCostShort(car, units);
-                default:
-                    return 0.0;
-            }
-        }
+        protected virtual double GetUnitsCost(Car car, List<DistributionUnit> units) { return 0.0; }
 
-        private double GetUnitsCostLong(Car car, List<DistributionUnit> units)
-        {
-            double cost = 0.0;
-            Car tmpCar = new Car {
-                Id = car.Id,
-                CurrentPlaceId = car.CurrentPlaceId,
-                RegisterPlaceId = car.RegisterPlaceId,
-                Tonnage = car.Tonnage,
-                OilCost = car.OilCost
-            };
-            foreach (var unit in units)
-            {
-                Order order = Orders.GetOrder(unit.OrderId);
-                Order tmpOrder = new Order
-                {
-                    Id = order.Id,
-                    SrcPlaceId = order.SrcPlaceId,
-                    DstPlaceId = order.DstPlaceId,
-                    RottenFine = order.RottenFine,
-                    MinTime = order.MinTime,
-                    MaxTime = order.MaxTime,
-                    CargoWeight = unit.Weight
-                };
-                cost += GetUnitCostLong(tmpCar, tmpOrder);
-                tmpCar.CurrentPlaceId = order.DstPlaceId;
-            }
-
-            return cost;
-        }
-
-        private double GetUnitCostLong(Car car, Order order)
-        {
-            double timeCostWithCargo = Map.GetTimeCost(order.SrcPlaceId, order.DstPlaceId);
-            double timeCostTotal = Map.GetTimeCost(car.CurrentPlaceId, order.SrcPlaceId) + timeCostWithCargo;
-            double distance = Map.GetDistance(car.CurrentPlaceId, order.SrcPlaceId) + Map.GetDistance(order.SrcPlaceId, order.DstPlaceId);
-            return distance * (car.OilCost + Constant.RouteFee) + timeCostTotal * Constant.FreezeFeeLong + timeCostWithCargo * (order.RottenFine * order.CargoWeight * Constant.RottenRatio);
-        }
-
-        private double GetUnitsCostShort(Car car, List<DistributionUnit> units)
-        {
-            // tomorrowPlans: L A L B L C L
-            // todayUnits: L A B L C D L
-            var tomorrowPlans = new List<DistributionUnit>();
-            var todayUnits = new List<DistributionUnit>();
-            foreach(var unit in units)
-            {
-                todayUnits.Add(unit.Clone() as DistributionUnit);
-            }
-
-            List<DistributionUnit> todayPlans;
-            double todayFine = 0.0;
-            while (true) {
-                todayPlans = GetTodayPlanFrom(car, todayUnits);
-                todayFine = MoveInvalidToTomorrow(todayUnits, tomorrowPlans);
-                if(todayFine >= 0)
-                {
-                    break;
-                }
-            }
-
-            double tomorrowFine = tomorrowPlans.Count / 2 * Constant.FineNextDay;
-            tomorrowPlans.Insert(0, new DistributionUnit(0, 0.0));
-            return todayFine + tomorrowFine + GetFeeWithoutFineShort(car, todayPlans) + GetFeeWithoutFineShort(car, tomorrowPlans);
-        }
-
-        private List<DistributionUnit> GetTodayPlanFrom(Car car, List<DistributionUnit> todayUnits)
-        {
-            var result = new List<DistributionUnit>();
-            result.Add(new DistributionUnit(0, 0.0));
-            double currentWeight = 0.0;
-            foreach(var unit in todayUnits)
-            {
-                if(currentWeight + unit.Weight > car.Tonnage)
-                {
-                    // use weight = 0.0 to indicate back to freezer
-                    result.Add(new DistributionUnit(0, 0.0));
-                    currentWeight = 0.0;
-                }
-                result.Add(unit.Clone() as DistributionUnit);
-                currentWeight += unit.Weight;
-            }
-
-            result.Add(new DistributionUnit(0, 0.0));
-            return result;
-        }
-
-        // return total fine at the same time
-        // return a negative number if invalid
-        private double MoveInvalidToTomorrow(List<DistributionUnit> todayUnits, List<DistributionUnit> tomorrowPlans) {
-            double result = 0.0;
-            DateTime currentTime = Constant.CurrentTime;
-            int currentPlaceId = Cars.GetRandomCar().RegisterPlaceId;
-            for(int i= 0; i< todayUnits.Count; ++i)
-            {
-                var unit = todayUnits[i];
-                Order order = Orders.GetOrder(unit.OrderId);
-                if(unit.Weight == 0.0)
-                {
-                    currentPlaceId = Cars.GetRandomCar().RegisterPlaceId;
-                    currentTime = GetReachTime(currentTime, currentPlaceId, Orders.GetOrder(todayUnits[i - 1].OrderId));
-                    currentTime += Constant.LoadTime;
-                    continue;
-                }
-
-                DateTime reachTime = GetReachTime(currentTime, currentPlaceId, order);
-                if (reachTime == currentTime)
-                {
-                    continue;
-                }
-
-                double fineToday = (reachTime > order.MaxTime) ? (Math.Ceiling((reachTime - order.MaxTime).TotalHours) * unit.Weight * Constant.FineHourTon) : 0.0;
-                if (reachTime > order.MaxTime + Constant.MaxExceedTime
-                    || fineToday > Constant.FineNextDay)
-                {
-                    todayUnits.Remove(unit);
-                    tomorrowPlans.Add(unit.Clone() as DistributionUnit);
-                    tomorrowPlans.Add(new DistributionUnit(0, 0.0));
-                    return -1;
-                }
-                result = fineToday;
-
-                currentTime = ((reachTime > order.MinTime) ? reachTime : order.MinTime) + Constant.LoadTime;
-                currentPlaceId = order.DstPlaceId;
-            }
-            return result;
-        }
-
-        private double GetFeeWithoutFineShort(Car car, List<DistributionUnit> units)
-        {
-            int count = units.Count;
-            if (count < 2)
-            {
-                return 0.0;
-            }
-
-            double distance = 0.0;
-            double timeCost = 0.0;
-            int placeId_1 = (units[0].Weight == 0.0) ? Cars.GetRandomCar().RegisterPlaceId : Orders.GetOrder(units[0].OrderId).DstPlaceId;
-            int placeId_2 = placeId_1;
-            for (int i = 1; i < count; ++i)
-            {
-                placeId_1 = placeId_2;
-                placeId_2 = (units[i].Weight == 0.0) ? Cars.GetRandomCar().RegisterPlaceId : Orders.GetOrder(units[i].OrderId).DstPlaceId;
-                distance += Map.GetDistance(placeId_1, placeId_2);
-                timeCost += Map.GetTimeCost(placeId_1, placeId_2);
-            }
-
-            return distance * (car.OilCost + Constant.RouteFee) + timeCost * Constant.FreezeFeeShort;
-        }
-
-        private DateTime GetReachTime(DateTime time, int currrentPlaceId, Order order)
-        {
-            if(currrentPlaceId == order.DstPlaceId)
-            {
-                return time;
-            }
-
-            double timeMinute = 0;
-            if(currrentPlaceId != order.SrcPlaceId)
-            {
-                timeMinute = Map.GetTimeCost(currrentPlaceId, order.SrcPlaceId);
-            }
-            timeMinute += Map.GetTimeCost(order.SrcPlaceId, order.DstPlaceId);
-            return time + new TimeSpan(0, (int)timeMinute, 0);
-        }
-
-        public object Clone()
+        public virtual Distribution Copy()
         {
             Distribution copyDistribution = new Distribution(true)
             {
@@ -429,7 +254,7 @@
             foreach (var unitPair in this.distribution)
             {
                 var copyUnits = new List<DistributionUnit>();
-                foreach(var unit in unitPair.Value)
+                foreach (var unit in unitPair.Value)
                 {
                     copyUnits.Add(unit.Clone() as DistributionUnit);
                 }
