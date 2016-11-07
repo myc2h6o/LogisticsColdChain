@@ -269,7 +269,7 @@
             throw new InvalidDistributionUnits();
         }
 
-        private void UpdateCost()
+        protected virtual void UpdateCost()
         {
             this.Cost = GetCost();
         }

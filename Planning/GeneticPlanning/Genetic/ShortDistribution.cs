@@ -6,11 +6,21 @@
 
     class ShortDistribution : Distribution
     {
+        public Dictionary<int, List<DistributionUnit>> TomorrowPlans { get; private set; } = new Dictionary<int, List<DistributionUnit>>();
+        public Dictionary<int, List<DistributionUnit>> TodayPlans { get; private set; } = new Dictionary<int, List<DistributionUnit>>();
+
+        protected override void UpdateCost()
+        {
+            this.TomorrowPlans.Clear();
+            this.TodayPlans.Clear();
+            base.UpdateCost();
+        }
+
         protected override double GetUnitsCost(Car car, List<DistributionUnit> units)
         {
-            // tomorrowPlans: L A L B L C L
-            // todayUnits: L A B L C D L
-            var tomorrowPlans = new List<DistributionUnit>();
+            // tomorrowPlan: L A L B L C L
+            // todayUnit: L A B L C D L
+            var tomorrowPlan = new List<DistributionUnit>();
             var todayUnits = new List<DistributionUnit>();
             foreach (var unit in units)
             {
@@ -24,21 +34,23 @@
                 }
             }
 
-            List<DistributionUnit> todayPlans;
+            List<DistributionUnit> todayPlan;
             double todayFine = 0.0;
             while (true)
             {
-                todayPlans = GetTodayPlanFrom(car, todayUnits);
-                todayFine = MoveInvalidToTomorrow(todayUnits, tomorrowPlans);
+                todayPlan = GetTodayPlanFrom(car, todayUnits);
+                todayFine = MoveInvalidToTomorrow(todayUnits, tomorrowPlan);
                 if (todayFine >= 0)
                 {
                     break;
                 }
             }
 
-            double tomorrowFine = tomorrowPlans.Count / 2 * Constant.FineNextDay;
-            tomorrowPlans.Insert(0, new DistributionUnit(0, 0.0));
-            return todayFine + tomorrowFine + GetFeeWithoutFine(car, todayPlans) + GetFeeWithoutFine(car, tomorrowPlans);
+            double tomorrowFine = tomorrowPlan.Count / 2 * Constant.FineNextDay;
+            tomorrowPlan.Insert(0, new DistributionUnit(0, 0.0));
+            this.TodayPlans.Add(car.Id, todayPlan);
+            this.TomorrowPlans.Add(car.Id, tomorrowPlan);
+            return todayFine + tomorrowFine + GetFeeWithoutFine(car, todayPlan) + GetFeeWithoutFine(car, tomorrowPlan);
         }
 
         private List<DistributionUnit> GetTodayPlanFrom(Car car, List<DistributionUnit> todayUnits)
@@ -88,8 +100,7 @@
                 }
 
                 double fineToday = (reachTime > order.MaxTime) ? (Math.Ceiling((reachTime - order.MaxTime).TotalHours) * unit.Weight * Constant.FineHourTon) : 0.0;
-                if (reachTime > order.MaxTime + Constant.MaxExceedTime
-                    || fineToday > Constant.FineNextDay)
+                if (reachTime > order.MaxTime + Constant.MaxExceedTime || IsFineExceedNextDay(fineToday))
                 {
                     todayUnits.Remove(unit);
                     tomorrowPlans.Add(unit.Clone() as DistributionUnit);
@@ -143,24 +154,49 @@
             return time + new TimeSpan(0, (int)timeMinute, 0);
         }
 
+        protected virtual bool IsFineExceedNextDay(double fineToday)
+        {
+            return fineToday > Constant.FineNextDay;
+        }
+
         public override Distribution Copy()
         {
             ShortDistribution copyDistribution = new ShortDistribution()
             {
-                distribution = new Dictionary<int, List<DistributionUnit>>()
+                distribution = new Dictionary<int, List<DistributionUnit>>(),
+                TodayPlans = new Dictionary<int, List<DistributionUnit>>(),
+                TomorrowPlans = new Dictionary<int, List<DistributionUnit>>()
             };
 
             foreach (var unitPair in this.distribution)
             {
-                var copyUnits = new List<DistributionUnit>();
-                foreach (var unit in unitPair.Value)
-                {
-                    copyUnits.Add(unit.Clone() as DistributionUnit);
-                }
+                var copyUnits = GetUnitsCopy(unitPair.Value);
                 copyDistribution.distribution.Add(unitPair.Key, copyUnits);
             }
 
+            foreach (var unitPair in this.TodayPlans)
+            {
+                var copyUnits = GetUnitsCopy(unitPair.Value);
+                copyDistribution.TodayPlans.Add(unitPair.Key, copyUnits);
+            }
+
+            foreach (var unitPair in this.TomorrowPlans)
+            {
+                var copyUnits = GetUnitsCopy(unitPair.Value);
+                copyDistribution.TomorrowPlans.Add(unitPair.Key, copyUnits);
+            }
+
             return copyDistribution;
+        }
+
+        private List<DistributionUnit> GetUnitsCopy(List<DistributionUnit> units)
+        {
+            var result = new List<DistributionUnit>();
+            foreach (var unit in units)
+            {
+                result.Add(unit.Clone() as DistributionUnit);
+            }
+            return result;
         }
     }
 }
