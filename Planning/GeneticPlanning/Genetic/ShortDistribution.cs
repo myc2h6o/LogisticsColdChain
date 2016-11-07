@@ -14,7 +14,14 @@
             var todayUnits = new List<DistributionUnit>();
             foreach (var unit in units)
             {
-                todayUnits.Add(unit.Clone() as DistributionUnit);
+                if (todayUnits.Count != 0 && unit.Weight != 0 && unit.OrderId == todayUnits[todayUnits.Count - 1].OrderId && unit.Weight + todayUnits[todayUnits.Count - 1].Weight <= car.Tonnage)
+                {
+                    todayUnits[todayUnits.Count - 1].AddWeight(unit.Weight);
+                }
+                else
+                {
+                    todayUnits.Add(unit.Clone() as DistributionUnit);
+                }
             }
 
             List<DistributionUnit> todayPlans;

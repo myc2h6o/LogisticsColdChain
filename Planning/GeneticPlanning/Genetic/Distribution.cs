@@ -83,24 +83,60 @@
             int carId_2 = Cars.GetRandomCar().Id;
             if (carId_2 != carId_1)
             {
-                bool containId_1 = distribution.ContainsKey(carId_1);
-                bool containId_2 = distribution.ContainsKey(carId_2);
-                if (containId_1 && containId_2)
+                SwitchTwoCars(carId_1, carId_2);
+                double tonnage_1 = Cars.GetCar(carId_1).Tonnage;
+                double tonnage_2 = Cars.GetCar(carId_2).Tonnage;
+                int smallerTonnageId;
+                double smallerTonnage;
+                if (tonnage_1 == tonnage_2)
                 {
-                    var tmp = distribution[carId_1];
-                    distribution[carId_1] = distribution[carId_2];
-                    distribution[carId_2] = tmp;
+                    return;
                 }
-                else if (!containId_1 && containId_2)
+                else if (tonnage_1 < tonnage_2)
                 {
-                    distribution.Add(carId_1, distribution[carId_2]);
-                    distribution.Remove(carId_2);
+                    smallerTonnageId = carId_1;
+                    smallerTonnage = tonnage_1;
                 }
-                else if (containId_1 && !containId_2)
+                else
                 {
-                    distribution.Add(carId_2, distribution[carId_1]);
-                    distribution.Remove(carId_1);
+                    smallerTonnageId = carId_2;
+                    smallerTonnage = tonnage_2;
                 }
+
+                if (!distribution.ContainsKey(smallerTonnageId))
+                {
+                    return;
+                }
+                foreach (var unitPair in this.distribution[smallerTonnageId])
+                {
+                    if(smallerTonnage < unitPair.Weight)
+                    {
+                        SwitchTwoCars(carId_1, carId_2);
+                        return;
+                    }
+                }
+            }
+        }
+
+        private void SwitchTwoCars(int carId_1, int carId_2)
+        {
+            bool containId_1 = distribution.ContainsKey(carId_1);
+            bool containId_2 = distribution.ContainsKey(carId_2);
+            if (containId_1 && containId_2)
+            {
+                var tmp = distribution[carId_1];
+                distribution[carId_1] = distribution[carId_2];
+                distribution[carId_2] = tmp;
+            }
+            else if (!containId_1 && containId_2)
+            {
+                distribution.Add(carId_1, distribution[carId_2]);
+                distribution.Remove(carId_2);
+            }
+            else if (containId_1 && !containId_2)
+            {
+                distribution.Add(carId_2, distribution[carId_1]);
+                distribution.Remove(carId_1);
             }
         }
 
@@ -140,14 +176,18 @@
             int carId = unitsPair.Key;
             var units = unitsPair.Value;
 
+            Car car = Cars.GetRandomCar();
             int listPos = Utils.Random(units.Count);
             DistributionUnit chosenUnit = units[listPos];
+            if(chosenUnit.Weight > car.Tonnage)
+            {
+                return;
+            }
             distribution[carId].Remove(chosenUnit);
             if (distribution[carId].Count == 0)
             {
                 distribution.Remove(carId);
             }
-            Car car = Cars.GetRandomCar();
             if (distribution.ContainsKey(car.Id))
             {
                 int i = 0;
@@ -177,7 +217,7 @@
             {
                 foreach (var carId in distribution.Keys)
                 {
-                    Cars.GetCar(carId);
+                    Car car = Cars.GetCar(carId);
                 }
             }
             catch (InvalidIdException)
@@ -189,8 +229,13 @@
             var orders = new Dictionary<int, Order>();
             foreach (var unitsPair in this.distribution)
             {
+                double tonnage = Cars.GetCar(unitsPair.Key).Tonnage;
                 foreach (var unit in unitsPair.Value)
                 {
+                    if(unit.Weight > tonnage)
+                    {
+                        throw new InvalidDistributionException();
+                    }
                     if (!orders.ContainsKey(unit.OrderId))
                     {
                         orders.Add(unit.OrderId, new Order());
