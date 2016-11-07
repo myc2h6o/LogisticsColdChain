@@ -293,25 +293,35 @@
 
         private double GetUnitsCostShort(Car car, List<DistributionUnit> units)
         {
-            var tomorrowUnits = new List<DistributionUnit>();
+            // tomorrowPlans: L A L B L C L
+            // todayUnits: L A B L C D L
+            var tomorrowPlans = new List<DistributionUnit>();
             var todayUnits = new List<DistributionUnit>();
             foreach(var unit in units)
             {
                 todayUnits.Add(unit.Clone() as DistributionUnit);
             }
 
-            var todayPlans = GetTodayPlanFrom(car, todayUnits);
-            while (MoveInvalidToTomorrow(todayUnits, tomorrowUnits)) {
+            List<DistributionUnit> todayPlans;
+            double todayFine = 0.0;
+            while (true) {
                 todayPlans = GetTodayPlanFrom(car, todayUnits);
+                todayFine = MoveInvalidToTomorrow(todayUnits, tomorrowPlans);
+                if(todayFine >= 0)
+                {
+                    break;
+                }
             }
 
-            // [TODO] calculate cost in movevalid and change function name.
-            return 0.0;
+            double tomorrowFine = tomorrowPlans.Count / 2 * Constant.FineNextDay;
+            tomorrowPlans.Insert(0, new DistributionUnit(0, 0.0));
+            return todayFine + tomorrowFine + GetFeeWithoutFineShort(car, todayPlans) + GetFeeWithoutFineShort(car, tomorrowPlans);
         }
 
         private List<DistributionUnit> GetTodayPlanFrom(Car car, List<DistributionUnit> todayUnits)
         {
             var result = new List<DistributionUnit>();
+            result.Add(new DistributionUnit(0, 0.0));
             double currentWeight = 0.0;
             foreach(var unit in todayUnits)
             {
@@ -324,10 +334,15 @@
                 result.Add(unit.Clone() as DistributionUnit);
                 currentWeight += unit.Weight;
             }
+
+            result.Add(new DistributionUnit(0, 0.0));
             return result;
         }
 
-        private bool MoveInvalidToTomorrow(List<DistributionUnit> todayUnits, List<DistributionUnit> tomorrowUnits) {
+        // return total fine at the same time
+        // return a negative number if invalid
+        private double MoveInvalidToTomorrow(List<DistributionUnit> todayUnits, List<DistributionUnit> tomorrowPlans) {
+            double result = 0.0;
             DateTime currentTime = Constant.CurrentTime;
             int currentPlaceId = Cars.GetRandomCar().RegisterPlaceId;
             for(int i= 0; i< todayUnits.Count; ++i)
@@ -348,19 +363,44 @@
                     continue;
                 }
 
+                double fineToday = (reachTime > order.MaxTime) ? (Math.Ceiling((reachTime - order.MaxTime).TotalHours) * unit.Weight * Constant.FineHourTon) : 0.0;
                 if (reachTime > order.MaxTime + Constant.MaxExceedTime
-                    || (reachTime > order.MaxTime && Math.Ceiling((reachTime - order.MaxTime).TotalHours) * unit.Weight * Constant.FineHourTon > Constant.FineNextDay))
+                    || fineToday > Constant.FineNextDay)
                 {
                     todayUnits.Remove(unit);
-                    tomorrowUnits.Add(unit.Clone() as DistributionUnit);
-                    tomorrowUnits.Add(new DistributionUnit(0, 0.0));
-                    return true;
+                    tomorrowPlans.Add(unit.Clone() as DistributionUnit);
+                    tomorrowPlans.Add(new DistributionUnit(0, 0.0));
+                    return -1;
                 }
+                result = fineToday;
 
                 currentTime = ((reachTime > order.MinTime) ? reachTime : order.MinTime) + Constant.LoadTime;
                 currentPlaceId = order.DstPlaceId;
             }
-            return false;
+            return result;
+        }
+
+        private double GetFeeWithoutFineShort(Car car, List<DistributionUnit> units)
+        {
+            int count = units.Count;
+            if (count < 2)
+            {
+                return 0.0;
+            }
+
+            double distance = 0.0;
+            double timeCost = 0.0;
+            int placeId_1 = (units[0].Weight == 0.0) ? Cars.GetRandomCar().RegisterPlaceId : Orders.GetOrder(units[0].OrderId).DstPlaceId;
+            int placeId_2 = placeId_1;
+            for (int i = 1; i < count; ++i)
+            {
+                placeId_1 = placeId_2;
+                placeId_2 = (units[i].Weight == 0.0) ? Cars.GetRandomCar().RegisterPlaceId : Orders.GetOrder(units[i].OrderId).DstPlaceId;
+                distance += Map.GetDistance(placeId_1, placeId_2);
+                timeCost += Map.GetTimeCost(placeId_1, placeId_2);
+            }
+
+            return distance * (car.OilCost + Constant.RouteFee) + timeCost * Constant.FreezeFeeShort;
         }
 
         private DateTime GetReachTime(DateTime time, int currrentPlaceId, Order order)
