@@ -66,7 +66,6 @@
         {
             Distribution bestDistribution = GetBestDistribution();
             var bestUnits = bestDistribution.distribution;
-            bestDistribution.Mutate();
             int i = 0;
             foreach (var unitPair in bestUnits)
             {
@@ -155,6 +154,7 @@
                     minIndex = i;
                 }
             }
+
             return distributions[minIndex];
         }
     }
