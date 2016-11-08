@@ -121,7 +121,10 @@
             if (isToday)
             {
                 Order firstOrder = Orders.GetOrder(units[1].OrderId);
-                Console.WriteLine($": {(firstOrder.MinTime - new TimeSpan(0, (int)Map.GetTimeCost(firstOrder.SrcPlaceId, firstOrder.DstPlaceId), 0)).ToString("h:mm")}");
+                DateTime timePredicted = (firstOrder.MinTime - new TimeSpan(0, (int)Map.GetTimeCost(firstOrder.SrcPlaceId, firstOrder.DstPlaceId), 0));
+                DateTime timeCurrent = Constant.CurrentTime;
+                DateTime timeActural = (timePredicted > timeCurrent) ? timePredicted : timeCurrent;
+                Console.WriteLine($": {timeActural.ToString("h:mm")}");
             }
             else
             {

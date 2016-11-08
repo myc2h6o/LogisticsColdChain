@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Planning;
 
     class ShortDistribution : Distribution
@@ -39,7 +40,7 @@
             while (true)
             {
                 todayPlan = GetTodayPlanFrom(car, todayUnits);
-                todayFine = MoveInvalidToTomorrow(todayUnits, tomorrowPlan);
+                todayFine = MoveInvalidToTomorrow(todayUnits, todayPlan, tomorrowPlan);
                 if (todayFine >= 0)
                 {
                     break;
@@ -53,6 +54,7 @@
             return todayFine + tomorrowFine + GetFeeWithoutFine(car, todayPlan) + GetFeeWithoutFine(car, tomorrowPlan);
         }
 
+        // units in plan generated is same object from todayUnits
         private List<DistributionUnit> GetTodayPlanFrom(Car car, List<DistributionUnit> todayUnits)
         {
             var result = new List<DistributionUnit>();
@@ -66,7 +68,7 @@
                     result.Add(new DistributionUnit(0, 0.0));
                     currentWeight = 0.0;
                 }
-                result.Add(unit.Clone() as DistributionUnit);
+                result.Add(unit);
                 currentWeight += unit.Weight;
             }
 
@@ -76,38 +78,44 @@
 
         // return total fine at the same time
         // return a negative number if invalid
-        private double MoveInvalidToTomorrow(List<DistributionUnit> todayUnits, List<DistributionUnit> tomorrowPlans)
+        private double MoveInvalidToTomorrow(List<DistributionUnit> todayUnits, List<DistributionUnit> todayPlan, List<DistributionUnit> tomorrowPlan)
         {
+            if(todayPlan.Count < 3)
+            {
+                // L -> L
+                return 0.0;
+            }
+
             double result = 0.0;
             DateTime currentTime = Constant.CurrentTime;
             int currentPlaceId = Cars.GetRandomCar().RegisterPlaceId;
-            for (int i = 0; i < todayUnits.Count; ++i)
+            for (int i = 1; i < todayPlan.Count; ++i)
             {
-                var unit = todayUnits[i];
-                Order order = Orders.GetOrder(unit.OrderId);
-                if (unit.Weight == 0.0)
+                var planUnit = todayPlan[i];
+                if (planUnit.Weight == 0.0)
                 {
                     currentPlaceId = Cars.GetRandomCar().RegisterPlaceId;
-                    currentTime = GetReachTime(currentTime, currentPlaceId, Orders.GetOrder(todayUnits[i - 1].OrderId));
+                    currentTime = GetReachTime(currentTime, currentPlaceId, Orders.GetOrder(todayPlan[i - 1].OrderId));
                     currentTime += Constant.LoadTime;
                     continue;
                 }
 
+                Order order = Orders.GetOrder(planUnit.OrderId);
                 DateTime reachTime = GetReachTime(currentTime, currentPlaceId, order);
                 if (reachTime == currentTime)
                 {
                     continue;
                 }
 
-                double fineToday = (reachTime > order.MaxTime) ? (Math.Ceiling((reachTime - order.MaxTime).TotalHours) * unit.Weight * Constant.FineHourTon) : 0.0;
+                double fineToday = (reachTime > order.MaxTime) ? (Math.Ceiling((reachTime - order.MaxTime).TotalHours) * planUnit.Weight * Constant.FineHourTon) : 0.0;
                 if (reachTime > order.MaxTime + Constant.MaxExceedTime || IsFineExceedNextDay(fineToday))
                 {
-                    todayUnits.Remove(unit);
-                    tomorrowPlans.Add(unit.Clone() as DistributionUnit);
-                    tomorrowPlans.Add(new DistributionUnit(0, 0.0));
+                    todayUnits.Remove(planUnit);
+                    tomorrowPlan.Add(planUnit.Clone() as DistributionUnit);
+                    tomorrowPlan.Add(new DistributionUnit(0, 0.0));
                     return -1;
                 }
-                result = fineToday;
+                result += fineToday;
 
                 currentTime = ((reachTime > order.MinTime) ? reachTime : order.MinTime) + Constant.LoadTime;
                 currentPlaceId = order.DstPlaceId;

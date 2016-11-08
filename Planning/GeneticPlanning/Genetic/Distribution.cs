@@ -35,7 +35,6 @@
                 }
             }
 
-
             UpdateCost();
             // [TODO] remove validate in production
             ValidateDistribution();
