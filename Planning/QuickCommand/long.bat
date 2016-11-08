@@ -1,0 +1,1 @@
+..\GeneticPlanning\bin\Release\GeneticPlanning.exe 0 ..\GeneticPlanning\testInfo\long 2016/11/5 13:00:00

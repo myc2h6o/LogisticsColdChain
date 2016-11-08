@@ -1,0 +1,1 @@
+..\GeneticPlanning\bin\Release\GeneticPlanning.exe 2 ..\GeneticPlanning\testInfo\shortCrazy 2016/11/5 13:00:00
