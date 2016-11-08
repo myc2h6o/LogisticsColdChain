@@ -15,6 +15,6 @@
         public static ModelType PlanType { get; set; }
         public static DateTime CurrentTime { get; set; }
         public static TimeSpan LoadTime { get; set; } = new TimeSpan(0, 30, 0);
-        public static TimeSpan MaxExceedTime { get; set; } = new TimeSpan(3, 0, 0);
+        public static TimeSpan MaxExceedTime { get; set; } = new TimeSpan(6, 0, 0);
     }
 }
