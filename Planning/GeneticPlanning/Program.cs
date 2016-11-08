@@ -10,7 +10,7 @@
         {
             if (args.Length != 4)
             {
-                Console.WriteLine("Usage [PROGRAM_NAME] [0(long)|1(short)] [INPUT_FOLDER_PATH] [YYYY/MM/DD HH:MM:SS]");
+                Console.WriteLine("Usage [PROGRAM_NAME] [0(long)|1(short)|2(crazy short)] [INPUT_FOLDER_PATH] [YYYY/MM/DD HH:MM:SS]");
                 return;
             }
 
