@@ -38,7 +38,7 @@
             foreach (var unitPair in bestUnits)
             {
                 i++;
-                int currentPlaceId = unitPair.Key;
+                int currentPlaceId = Cars.GetCar(unitPair.Key).CurrentPlaceId;
                 Console.Write($"Car_{i}: ");
                 bool isFirst = true;
                 foreach (var unit in unitPair.Value)
@@ -48,14 +48,14 @@
                     {
                         Console.Write("->");
                     }
-                    isFirst = false;
 
-                    if(order.SrcPlaceId != currentPlaceId)
+                    if(order.SrcPlaceId != currentPlaceId || isFirst)
                     {
                         Console.Write($"{Map.GetPlaceName(order.SrcPlaceId)}->");
                     }
                     Console.Write($"{Map.GetPlaceName(order.DstPlaceId)}");
                     currentPlaceId = order.DstPlaceId;
+                    isFirst = false;
                 }
                 Console.WriteLine();
             }
