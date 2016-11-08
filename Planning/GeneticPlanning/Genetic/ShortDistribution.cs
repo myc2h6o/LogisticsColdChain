@@ -6,8 +6,8 @@
 
     class ShortDistribution : Distribution
     {
-        public Dictionary<int, List<DistributionUnit>> TomorrowPlans { get; private set; } = new Dictionary<int, List<DistributionUnit>>();
-        public Dictionary<int, List<DistributionUnit>> TodayPlans { get; private set; } = new Dictionary<int, List<DistributionUnit>>();
+        public Dictionary<int, List<DistributionUnit>> TomorrowPlans { get; protected set; } = new Dictionary<int, List<DistributionUnit>>();
+        public Dictionary<int, List<DistributionUnit>> TodayPlans { get; protected set; } = new Dictionary<int, List<DistributionUnit>>();
 
         protected override void UpdateCost()
         {
@@ -189,7 +189,7 @@
             return copyDistribution;
         }
 
-        private List<DistributionUnit> GetUnitsCopy(List<DistributionUnit> units)
+        protected List<DistributionUnit> GetUnitsCopy(List<DistributionUnit> units)
         {
             var result = new List<DistributionUnit>();
             foreach (var unit in units)

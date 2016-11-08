@@ -24,6 +24,7 @@
                     PrintResultLong();
                     break;
                 case ModelType.SHORT:
+                case ModelType.SHORT_CRAZY:
                     PrintResultShort();
                     break;
                 default:
@@ -141,6 +142,9 @@
                         break;
                     case ModelType.SHORT:
                         distributions[i] = new ShortDistribution();
+                        break;
+                    case ModelType.SHORT_CRAZY:
+                        distributions[i] = new ShortCrazyDistribution();
                         break;
                     default:
                         throw new InvalidModelTypeException();

@@ -2,7 +2,7 @@
 {
     using System;
 
-    public enum ModelType { LONG, SHORT}
+    public enum ModelType { LONG, SHORT, SHORT_CRAZY }
 
     public static class Constant
     {
